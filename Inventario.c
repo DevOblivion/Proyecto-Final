@@ -1,3 +1,6 @@
+#Adriana, vea que si se puede editar
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #define LIMPIARPANTALLA system("clear");
