@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define LIMPIARPANTALLA system("cls");
+#define LIMPIARPANTALLA system("clear");
 #define MOSTRAREMPRESA printf("\nAAA Conections");
 #define SALTARLINEA printf("\n");
 
