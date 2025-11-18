@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #define LIMPIARPANTALLA system("clear");
 #define MOSTRAREMPRESA printf("\nAAA Conections");
-#define SALTARLINEA printf("\n");
+#define SALTARLINEA printf("\n"); 
 
 //Estructuras
 
