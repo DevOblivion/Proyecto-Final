@@ -58,6 +58,7 @@ typedef struct {
 
 Cliente crearCliente(){
     Cliente miCliente;
+    int pausa;
     printf("--------- Crear Cliente ---------\n");
     printf("\nDocumento de Identidad: ");
     scanf("%d", &miCliente.idCliente);
@@ -71,7 +72,9 @@ Cliente crearCliente(){
     fgets(miCliente.telefonoCliente, 15, stdin);
     printf("\nEstrato: ");
     scanf("%d", &miCliente.estrato);
-    printf("\nCliente creado exitosamente. \n\n");
+    printf("\n\nCliente creado exitosamente. \n\n");
+    printf("\nDigite 0 para continuar...");
+    scanf("%d", &pausa);
     return miCliente;
 }
 
@@ -90,7 +93,7 @@ void mostrarClientes(Cliente miCliente, int cont){
 Cliente actualizarCliente(Cliente miCliente){
     int opcion = 1;
     while(opcion != 0){
-        printf("\n--------- Actualizar Clientes ---------\n");
+        printf("\n--------- Actualizar Cliente ---------\n");
         printf("\n1. Nombre. ");
         printf("\n2. Direccion. ");
         printf("\n3. Telefono. ");
@@ -99,40 +102,51 @@ Cliente actualizarCliente(Cliente miCliente){
         printf("\n\n----------------------------------------");
         printf("\nIngrese la opcion: ");
         scanf("%d", &opcion);
+        LIMPIARPANTALLA;
         char c__buffer2[20];
         fgets(c__buffer2, 20, stdin);
         switch(opcion){
             case 0:
                 return miCliente;
-                LIMPIARPANTALLA;
                 break;
             case 1:
                 printf("\nActualice su Nombre: ");
                 fgets(miCliente.nombreCompleto, 50, stdin);
-                LIMPIARPANTALLA;
                 printf("\nNombre Actualizado.\n");
+                int pausa;
+                printf("\nDigite 0 para continuar...");
+                scanf("%d", &pausa);
+                LIMPIARPANTALLA;
                 break;
             case 2:
                 printf("\nActualice su Direccion: ");
                 fgets(miCliente.direccionCliente, 50, stdin);
-                LIMPIARPANTALLA;
                 printf("\nDireccion Actualizada.\n");
+                int pausa2;
+                printf("\nDigite 0 para continuar...");
+                scanf("%d", &pausa2);  
+                LIMPIARPANTALLA;
                 break;
             case 3:
                 printf("\nActualice su Telefono: ");
                 fgets(miCliente.telefonoCliente, 15, stdin);
-                LIMPIARPANTALLA;
                 printf("\nTelefono Actualizado.\n");
+                int pausa3;
+                printf("\nDigite 0 para continuar...");
+                scanf("%d", &pausa3); 
+                LIMPIARPANTALLA;
                 break;
             case 4:
                 printf("\nActualice su Estrato: ");
                 scanf("%d", &miCliente.estrato);
-                LIMPIARPANTALLA;
                 printf("\nEstrato Actualizado.\n");
+                int pausa4;
+                printf("\nDigite 0 para continuar...");
+                scanf("%d", &pausa4);  
+                LIMPIARPANTALLA;
                 break;
         }
     }
-    LIMPIARPANTALLA;
     return miCliente;
 }
 
@@ -141,6 +155,10 @@ void eliminarClientes(int *contClientes, Cliente vectorClientes[], int posicion)
         vectorClientes[i] = vectorClientes[i+1];
     }
     printf("\nCliente eliminado correctamente. \n\n");
+    int pausa;
+    printf("\nDigite 0 para continuar...");
+    scanf("%d", &pausa);
+    LIMPIARPANTALLA;
     (*contClientes)--;
 }
 
@@ -172,10 +190,12 @@ void menuPrincipal(){
     //Funciones submenu (Para resolver las tareas una por una con funciones, no blo ques de codigo gigantes)
 
 void submenuCrearClientes(Cliente vectorClientes[], int *contClientes){
+    LIMPIARPANTALLA;
     Cliente miCliente;
     miCliente = crearCliente();
     vectorClientes[*contClientes] = miCliente;
     (*contClientes)++;
+    LIMPIARPANTALLA;
 }
 
 
@@ -188,42 +208,67 @@ void submenuMostrarClientes(int contClientes, Cliente vectorClientes[]){
     for(int i = 0; i < contClientes; i++){
         mostrarClientes(vectorClientes[i], i+1);
     }
+    int pausa;
+    printf("\nDigite 0 para continuar...");
+    scanf("%d", &pausa);
+    LIMPIARPANTALLA;
 }
 
 int submenuActualizarClientes(int *contClientes, Cliente vectorClientes[]){
+    LIMPIARPANTALLA;
     Cliente miCliente;
     if((*contClientes)==0){
         printf("\nNingun cliente ha sido registrado.\n\n");
+        int pausa;
+        printf("\nDigite 0 para continuar...");
+        scanf("%d", &pausa);
+        LIMPIARPANTALLA;
         return 0;
     }
     int id;
-    printf("Ingrese el ID del cliente: ");
+    printf("\n--------- Actualizar Cliente ---------\n");
+    printf("\nIngrese el ID del cliente: ");
     scanf("%d", &id);
     int clienteEncontrado = -1; //Si se encuentra el cliente la variable es igual a 1, si es -1 no se encontro
     int i;
     for(i=0; i<(*contClientes); i++){
         if(vectorClientes[i].idCliente == id){ //Si el ID del cliente se encuentra en el vector Clientes entonces ClienteEcontrado = 1
             clienteEncontrado = 1; //El cliente se encontro
+            int pausa;
+            printf("\n\nCliente encontrado.\n");
+            printf("\nDigite 0 para actualizar la informacion del cliente...");
+            scanf("%d", &pausa);
+            LIMPIARPANTALLA;
             miCliente = vectorClientes[i]; //Se encontro el vector del Cliente a actualizar
             Cliente clienteActualizado = actualizarCliente(miCliente); //La funcion devuelve el Cliente actualizado
             vectorClientes[i] = clienteActualizado; // El cliente fue actualizado
-            LIMPIARPANTALLA;
             break;
         }
     }
     if(clienteEncontrado == -1){ //Si entra a este if es porque el cliente no fue encontrado
-        printf("\nCliente no encontrado.\n");
+        printf("\n\nCliente no encontrado.\n");
+        int pausa;
+        printf("\nDigite 0 para continuar...");
+        scanf("%d", &pausa);
+        LIMPIARPANTALLA;
     }
 }
 
 int submenuEliminarClientes(int *contClientes, Cliente vectorClientes[]){
+    LIMPIARPANTALLA;
     if((*contClientes)==0){
         printf("\nNingun cliente ha sido registrado.\n\n");
+        int pausa;
+        printf("\nDigite 0 para continuar...");
+        scanf("%d", &pausa);
+        LIMPIARPANTALLA;
         return 0;
     }
     int id;
-    printf("Ingrese el ID del cliente: ");
+    printf("\n--------- Eliminar Cliente ---------\n");
+    printf("\nIngrese el ID del cliente: ");
     scanf("%d", &id);
+    LIMPIARPANTALLA;
     int clienteEncontrado = -1;
     int i;
     int posicion;
@@ -231,12 +276,22 @@ int submenuEliminarClientes(int *contClientes, Cliente vectorClientes[]){
         if(vectorClientes[i].idCliente == id){
             clienteEncontrado = 1;
             posicion = i;
+            printf("Cliente encontrado.\n");
+            int pausa;
+            printf("\nDigite 0 para confirmar la eliminacion del cliente...");
+            scanf("%d", &pausa);
+            LIMPIARPANTALLA;
             eliminarClientes(contClientes, vectorClientes, posicion);
             break;
         }
+        LIMPIARPANTALLA;
     }
     if(clienteEncontrado == -1){
         printf("\nCliente no encontrado.\n");
+        int pausa;
+        printf("\nDigite 0 para continuar...");
+        scanf("%d", &pausa);  
+        LIMPIARPANTALLA;
     }
 }
 
@@ -248,7 +303,6 @@ void gestionarMenus(int opcion, Cliente vectorClientes[], int *contClientes){
                 while(opcionGestionarClientes!=0){
                     menuGestionarClientes();
                     scanf("%d", &opcionGestionarClientes);
-                    LIMPIARPANTALLA;
                     switch(opcionGestionarClientes){
                         case opcionCrearClientes:
                             submenuCrearClientes(vectorClientes, contClientes);
@@ -279,6 +333,7 @@ void main(){
     Cliente vectorClientes[tamanoClientes];
     int opcion = 1;
     while(opcion!=0){
+        LIMPIARPANTALLA;
         menuPrincipal();
         scanf("%d", &opcion);
         LIMPIARPANTALLA;
