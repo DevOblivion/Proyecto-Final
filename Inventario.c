@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define LIMPIARPANTALLA system("clear");
+#define LIMPIARPANTALLA system("clear"); //cls 
 #define MOSTRAREMPRESA printf("\nAAA Conections");
 #define SALTARLINEA printf("\n"); 
 
@@ -8,7 +8,7 @@
 
 typedef enum {
     menuClientes = 1,
-    menuInsumos,
+    menuProductos, //Cambio insumo a productos
     menuVentas,
 } Menus;
 
@@ -18,6 +18,13 @@ typedef enum {
     opcionActualizarClientes,
     opcionEliminarClientes,
 } Clientes;
+
+typedef enum {
+    opcionCrearProductos = 1,
+    opcionMostrarProductos,
+    opcionActualizarProductos,
+    opcionEliminarProductos,
+} Productos;
 
 typedef struct {
     int dia;
@@ -38,11 +45,14 @@ typedef struct {
 
 
 typedef struct {
-    int idEquipo;
-    char tipoInsumo;
-    float valor;
-    Fecha fecha;
-} Insumos;
+    int idProducto;
+    char tipoProducto;
+    char nombreProducto;
+    int valorCompra;
+    float valorVenta;
+    int CantidadProducto;
+    Fecha fechaCompra;
+} Producto;
 
 
 
@@ -173,12 +183,360 @@ void menuGestionarClientes(){
     printf("\nIngrese la opcion: ");
 }
 
+// Funciones Producto
+
+Producto ingresarProducto(){
+    Producto elProducto;
+    printf("--------- Ingresar Ptoducto ---------\n");
+    printf("\nTipo de producto: ");
+    printf("\n1. Equipos. ");
+    printf("\n2. Insumos. ");
+    printf("\n\n----------------------------------------");
+    printf("\nIngrese la opcion: ");
+    scanf("%d", &elProducto.tipoProducto);
+    char c__buffer2[20];
+    fgets(c__buffer2, 20, stdin);
+   
+    switch(elProducto.tipoProducto){
+        printf("\nNombre del Producto: ");
+        
+        case 1:
+        printf("\n1. Router. ");
+        printf("\n2. Antena. ");
+        printf("\n3. Estabilizador. ");
+        printf("\n\n Ingrese una opcion. ");
+        scanf("%d", &elProducto.nombreProducto);
+        char c__buffer2[20];
+        fgets(c__buffer2, 20, stdin);
+        break;
+
+        case 2:
+
+        printf("\n1. Cable UTP. ");
+        printf("\n2. Conector RJ45 ");
+        printf("\n3. Grapas. ");
+        printf("\n4. Amarras. ");
+        printf("\n\n Ingrese una opcion. ");
+        scanf("%d", &elProducto.nombreProducto);
+        
+        break;
+    }
+
+    switch(elProducto.tipoProducto){
+        case 1:
+        switch(elProducto.nombreProducto){
+            case 1:
+            elProducto.idProducto = 1101;
+            break;
+            case 2:
+            elProducto.idProducto = 1201;
+            break;
+            case 3:
+            elProducto.idProducto = 1301;
+            break;
+        }
+        break;
+
+        case 2:
+            switch(elProducto.nombreProducto){
+                case 1:
+                elProducto.idProducto = 2101;
+                break;
+                case 2:
+                elProducto.idProducto = 2201;
+                break;
+                case 3:
+                elProducto.idProducto = 2301;
+                break;
+                case 4:
+                elProducto.idProducto = 2401;
+                break;
+            }
+        break; 
+
+        
+    }
+    
+    switch (elProducto.idProducto){
+        case 1101:
+        elProducto.valorCompra = 38000;
+        elProducto.valorVenta = elProducto.valorCompra *1.3;
+        break;
+
+        case 1201:
+        elProducto.valorCompra = 145000;
+        elProducto.valorVenta = elProducto.valorCompra *1.3;
+        break;
+
+        case 1301:
+        elProducto.valorCompra = 25000;
+        elProducto.valorVenta = elProducto.valorCompra *1.3;
+        break;
+
+        case 2101:
+        elProducto.valorCompra = 3500;
+        elProducto.valorVenta = elProducto.valorCompra *1.3;
+        break;
+
+        case 2201:
+        elProducto.valorCompra = 1200;
+        elProducto.valorVenta = elProducto.valorCompra *1.3;
+        break;
+
+        case 2301:
+        elProducto.valorCompra = 2900;
+        elProducto.valorVenta = elProducto.valorCompra *1.3;
+        break;
+
+        case 2401:
+        elProducto.valorCompra = 4500;
+        elProducto.valorVenta = elProducto.valorCompra *1.3;
+        break;
+    }
+
+
+    printf("Cantidad del producto: ");
+    scanf("%d", &elProducto.CantidadProducto);
+    
+    printf("Fecha de Compra: ");
+    scanf("%c", &elProducto.fechaCompra);
+       
+    
+    printf("\nProducto registrado exitosamente. \n\n");
+    return elProducto;
+    
+}
+
+
+void mostrarProductos(Producto elProducto, int cont){
+        printf("\n\n--------- Producto #%d ---------", cont);
+        printf("\nID : %d", elProducto.idProducto);
+        if(elProducto.tipoProducto==1){
+            printf("\nTipo: Equipo");
+        }else{
+            printf("\nTipo: Insumo");
+        }
+                
+        switch (elProducto.idProducto){
+        case 1101:
+        printf("\nNombre: Router");
+        break;
+
+        case 1201:
+        printf("\nNombre: Antena");
+        break;
+
+        case 1301:
+        printf("\nNombre: Estabilizador");
+        break;
+
+        case 2101:
+        printf("\nNombre: Cable UTP");
+        break;
+
+        case 2201:
+        printf("\nNombre: Conector RJ45");
+        break;
+
+        case 2301:
+        printf("\nNombre: Grapas");
+        break;
+
+        case 2401:
+        printf("\nNombre: Amarras");
+        break;
+    }
+        printf("\nValor Compra: %d", elProducto.valorCompra);
+        printf("\nValor Venta: %.0f", elProducto.valorVenta);
+        printf("\nCantidad: %d", elProducto.CantidadProducto);
+        printf("\nFecha de Compra: %f\n\n", elProducto.fechaCompra);
+        int pausa;
+        printf("\nDigite 0 para continuar...");
+        scanf("%d", &pausa);
+}
+
+
+
+Producto actualizarProducto(Producto elProducto){
+    int opcion = 1;
+    while(opcion != 0){
+        printf("\n--------- Actualizar Productos ---------\n");
+        printf("\n1. Producto. ");
+        printf("\n2. Cantidad. ");
+        printf("\n3. Fecha. ");
+        printf("\n\n0. Atras");
+        printf("\n\n----------------------------------------");
+        printf("\nIngrese la opcion: ");
+        scanf("%d", &opcion);
+        char c__buffer2[20];
+        fgets(c__buffer2, 20, stdin);
+        switch(opcion){
+            case 0:
+                return elProducto;
+                LIMPIARPANTALLA;
+                break;
+            case 1:
+                printf("\nActualice Tipo de Producto: ");
+                printf("\n1. Equipos. ");
+                printf("\n2. Insumos. ");
+                printf("\n\n----------------------------------------");
+                printf("\nIngrese la opcion: ");
+                scanf("%d", &elProducto.tipoProducto);
+                printf("\nActualice Nombre del Producto: ");
+                switch(elProducto.tipoProducto){
+                    case 1:
+                    printf("\n1. Router. ");
+                    printf("\n2. Antena. ");
+                    printf("\n3. Estabilizador. ");
+                    printf("\n\n Ingrese una opcion. ");
+                    scanf("%d", &elProducto.nombreProducto);
+                    break;
+
+                    case 2:
+
+                    printf("\n1. Cable UTP. ");
+                    printf("\n2. Conector RJ45 ");
+                    printf("\n3. Grapas. ");
+                    printf("\n4. Amarras. ");
+                    printf("\n\n Ingrese una opcion. ");
+                    scanf("%d", &elProducto.nombreProducto);
+                    break;
+                }
+
+                switch(elProducto.tipoProducto){
+                    case 1:
+                        switch(elProducto.nombreProducto){
+                            case 1:
+                            elProducto.idProducto = 1101;
+                            break;
+                            case 2:
+                            elProducto.idProducto = 1201;
+                            break;
+                            case 3:
+                            elProducto.idProducto = 1301;
+                            break;
+                        }
+                    break;
+
+                    case 2:
+                        switch(elProducto.nombreProducto){
+                            case 1:
+                            elProducto.idProducto = 2101;
+                            break;
+                            case 2:
+                            elProducto.idProducto = 2201;
+                            break;
+                            case 3:
+                            elProducto.idProducto = 2301;
+                            break;
+                            case 4:
+                            elProducto.idProducto = 2401;
+                            break;
+                        }
+                    break; 
+                }
+
+                switch (elProducto.idProducto){
+                    case 1101:
+                    elProducto.valorCompra = 38000;
+                    elProducto.valorVenta = elProducto.valorCompra *1.3;
+                    break;
+
+                    case 1201:
+                    elProducto.valorCompra = 145000;
+                    elProducto.valorVenta = elProducto.valorCompra *1.3;
+                    break;
+
+                    case 1301:
+                    elProducto.valorCompra = 25000;
+                    elProducto.valorVenta = elProducto.valorCompra *1.3;
+                    break;
+
+                    case 2101:
+                    elProducto.valorCompra = 3500;
+                    elProducto.valorVenta = elProducto.valorCompra *1.3;
+                    break;
+
+                    case 2201:
+                    elProducto.valorCompra = 1200;
+                    elProducto.valorVenta = elProducto.valorCompra *1.3;
+                    break;
+
+                    case 2301:
+                    elProducto.valorCompra = 2900;
+                    elProducto.valorVenta = elProducto.valorCompra *1.3;
+                    break;
+
+                    case 2401:
+                    elProducto.valorCompra = 4500;
+                    elProducto.valorVenta = elProducto.valorCompra *1.3;
+                    break;
+                }
+
+                LIMPIARPANTALLA;
+                printf("\nProducto Actualizado.\n");
+                int pausa;
+                printf("\nDigite 0 para continuar...");
+                scanf("%d", &pausa);
+                break;
+
+            case 2:
+                printf("\nActualice Cantidad: ");
+                scanf("%d",&elProducto.CantidadProducto);
+                LIMPIARPANTALLA;
+                printf("\nCantidad Actualizada.\n");
+                pausa;
+                printf("\nDigite 0 para continuar...");
+                scanf("%d", &pausa);
+                break;
+            
+            case 3:
+                printf("\nActualice Fecha de Compra: ");
+                //scanf(elProducto.fechaCompra, 15, stdin);
+                LIMPIARPANTALLA;
+                printf("\nTelefono Actualizado.\n");
+                pausa;
+                printf("\nDigite 0 para continuar...");
+                scanf("%d", &pausa);
+                break;
+            
+        }
+    }
+    LIMPIARPANTALLA;
+    return elProducto;
+}
+
+void eliminarProductos(int *contProductos, Producto vectorProductos[], int posicion){
+    for(int i = posicion; i<(*contProductos)-1; i++){
+        vectorProductos[i] = vectorProductos[i+1];
+    }
+    printf("\nProducto eliminado correctamente. \n\n");
+    int pausa;
+    printf("\nDigite 0 para continuar...");
+    scanf("%d", &pausa);
+    LIMPIARPANTALLA;
+    (*contProductos)--;
+}
+
+
+void menuGestionarProductos(){
+    printf("--------- Gestion Productos ---------\n");
+    printf("\n1. Ingresar Productos. ");
+    printf("\n2. Mostrar Productos. ");
+    printf("\n3. Actualizar Productos. ");
+    printf("\n4. Eliminar Productos. ");
+    printf("\n\n0. Atras");
+    printf("\n\n----------------------------------------");
+    printf("\nIngrese la opcion: ");
+}
+
+
 // Funcion Menu Principal
 
 void menuPrincipal(){
     printf("--------- Bienvenido a AAA Connection ---------\n");
     printf("\n1. Gestionar Cliente. ");
-    printf("\n2. Gestionar Insumos. ");
+    printf("\n2. Gestionar Productos. ");
     printf("\n3. Gestionar Ventas. ");
     printf("\n\n0. Salir");
     printf("\n\n----------------------------------------------");
@@ -197,8 +555,6 @@ void submenuCrearClientes(Cliente vectorClientes[], int *contClientes){
     (*contClientes)++;
     LIMPIARPANTALLA;
 }
-
-
 
 void submenuMostrarClientes(int contClientes, Cliente vectorClientes[]){
     LIMPIARPANTALLA;
@@ -295,7 +651,163 @@ int submenuEliminarClientes(int *contClientes, Cliente vectorClientes[]){
     }
 }
 
-void gestionarMenus(int opcion, Cliente vectorClientes[], int *contClientes){
+// Submenus Producto
+
+void submenuCrearProductos(Producto vectorProductos[], int *contProductos){
+    Producto elProducto;
+    elProducto = ingresarProducto();
+    vectorProductos[*contProductos] = elProducto;
+    (*contProductos)++;
+}
+
+
+
+void submenuMostrarProductos(int contProductos, Producto vectorProductos[]){
+    LIMPIARPANTALLA;
+    if(contProductos==0){
+        printf("\nNingun producto ha sido registrado.\n\n");
+        }
+    for(int i = 0; i < contProductos; i++){
+        mostrarProductos(vectorProductos[i], i+1);
+    }
+}
+
+int submenuActualizarProductos(int *contProductos, Producto vectorProductos[]){
+    Producto elProducto;
+    if((*contProductos)==0){
+        printf("\nNingun producto ha sido registrado.\n\n");
+        return 0;
+    }
+    int id;
+    for(int i = 0; i < (*contProductos); i++){
+     
+        switch (vectorProductos[i].idProducto){
+            case 1101:
+            printf("\n%d    Router",vectorProductos[i].idProducto);
+            break;
+
+            case 1201:
+            printf("\n%d    Antena",vectorProductos[i].idProducto);
+            break;
+
+            case 1301:
+            printf("\n%d    Estabilizador",vectorProductos[i].idProducto);
+            break;
+
+            case 2101:
+            printf("\n%d    Cable UTP",vectorProductos[i].idProducto);
+            break;
+
+            case 2201:
+            printf("\n%d    Conector RJ45",vectorProductos[i].idProducto);
+            break;
+
+            case 2301:
+            printf("\n%d    Grapas",vectorProductos[i].idProducto);
+            break;
+
+            case 2401:
+            printf("\n%d    Amarras",vectorProductos[i].idProducto);
+            break;
+        }
+        
+    }
+    printf("\n\n----------------------------------------");
+    printf("\nIngrese el ID del producto: ");
+    scanf("%d", &id);
+    int productoEncontrado = -1; 
+    int i;
+    for(i=0; i<(*contProductos); i++){
+        if(vectorProductos[i].idProducto == id){ 
+            productoEncontrado = 1;
+            elProducto = vectorProductos[i];
+            Producto productoActualizado = actualizarProducto(elProducto); 
+            vectorProductos[i] = productoActualizado; 
+            LIMPIARPANTALLA;
+            break;
+        }
+    }
+    if(productoEncontrado == -1){ 
+        printf("\nProducto no encontrado.\n");
+    }
+}
+
+int submenuEliminarProductos(int *contProductos, Producto vectorProductos[]){
+    LIMPIARPANTALLA;
+    if((*contProductos)==0){
+        printf("\nNingun producto ha sido registrado.\n\n");
+        int pausa;
+        printf("\nDigite 0 para continuar...");
+        scanf("%d", &pausa);
+        LIMPIARPANTALLA;
+        return 0;
+    }
+    int id;
+    printf("\n--------- Eliminar Producto ---------\n");
+    for(int i = 0; i < (*contProductos); i++){
+     
+        switch (vectorProductos[i].idProducto){
+            case 1101:
+            printf("\n%d    Router",vectorProductos[i].idProducto);
+            break;
+
+            case 1201:
+            printf("\n%d    Antena",vectorProductos[i].idProducto);
+            break;
+
+            case 1301:
+            printf("\n%d    Estabilizador",vectorProductos[i].idProducto);
+            break;
+
+            case 2101:
+            printf("\n%d    Cable UTP",vectorProductos[i].idProducto);
+            break;
+
+            case 2201:
+            printf("\n%d    Conector RJ45",vectorProductos[i].idProducto);
+            break;
+
+            case 2301:
+            printf("\n%d    Grapas",vectorProductos[i].idProducto);
+            break;
+
+            case 2401:
+            printf("\n%d    Amarras",vectorProductos[i].idProducto);
+            break;
+        }
+        
+    }
+    printf("\n\n----------------------------------------");
+    printf("\nIngrese el ID del Producto: ");
+    scanf("%d", &id);
+    LIMPIARPANTALLA;
+    int productoEncontrado = -1;
+    int i;
+    int posicion;
+    for(i=0; i<(*contProductos); i++){
+        if(vectorProductos[i].idProducto == id){
+            productoEncontrado = 1;
+            posicion = i;
+            printf("Producto encontrado.\n");
+            int pausa;
+            printf("\nDigite 0 para confirmar la eliminacion del producto...");
+            scanf("%d", &pausa);
+            LIMPIARPANTALLA;
+            eliminarProductos(contProductos, vectorProductos, posicion);
+            break;
+        }
+        LIMPIARPANTALLA;
+    }
+    if(productoEncontrado == -1){
+        printf("\nProducto no encontrado.\n");
+        int pausa;
+        printf("\nDigite 0 para continuar...");
+        scanf("%d", &pausa);  
+        LIMPIARPANTALLA;
+    }
+}
+
+void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProductos[], int *contClientes,int *contProductos){
     Cliente miCliente;
     switch(opcion){
             case menuClientes:
@@ -315,12 +827,33 @@ void gestionarMenus(int opcion, Cliente vectorClientes[], int *contClientes){
                             break;
                         case opcionEliminarClientes:
                             submenuEliminarClientes(contClientes, vectorClientes);
+                            break;
                     }
                 }
             break;
-            case menuInsumos:
-                
+            case menuProductos:;
+                int opcionGestionarProductos = 1;
+                while(opcionGestionarProductos!=0){
+                    menuGestionarProductos();
+                    scanf("%d", &opcionGestionarProductos);
+                    LIMPIARPANTALLA;
+                    switch(opcionGestionarProductos){
+                        case opcionCrearProductos:
+                            submenuCrearProductos(vectorProductos, contProductos);
+                            break;
+                        case opcionMostrarProductos:
+                            submenuMostrarProductos(*contProductos, vectorProductos);
+                            break;
+                        case opcionActualizarProductos:
+                            submenuActualizarProductos(contProductos, vectorProductos);
+                            break;
+                        case opcionEliminarProductos:
+                            submenuEliminarProductos(contProductos, vectorProductos);
+                            break;
+                    }
+                }
             break;
+
             case menuVentas:
 
             break;
@@ -329,14 +862,21 @@ void gestionarMenus(int opcion, Cliente vectorClientes[], int *contClientes){
 
 void main(){
     int tamanoClientes = 100;
+    int tamanoProductos = 100;
     int contClientes = 0;
+    int contProductos = 0;
     Cliente vectorClientes[tamanoClientes];
+    Producto vectorProductos[tamanoProductos];
     int opcion = 1;
     while(opcion!=0){
         LIMPIARPANTALLA;
         menuPrincipal();
         scanf("%d", &opcion);
         LIMPIARPANTALLA;
-        gestionarMenus(opcion, vectorClientes, &contClientes);
+        gestionarMenus(opcion, vectorClientes, vectorProductos, &contClientes,&contProductos);
     }
 }
+
+
+// En el codigo de eliminar, sale por pantalla que si esta seguro de eliminar, 0 para continuar, pero cual es la opcion para desistir de eliminar?
+// toca vereificar las pausas porque como me quedo a mi en el "mostrar", no me gusto 
