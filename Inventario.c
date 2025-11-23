@@ -16,6 +16,7 @@ typedef enum {
     opcionCrearClientes = 1,
     opcionMostrarClientes,
     opcionActualizarClientes,
+    opcionEliminarClientes,
 } Clientes;
 
 typedef struct {
@@ -135,7 +136,13 @@ Cliente actualizarCliente(Cliente miCliente){
     return miCliente;
 }
 
-
+void eliminarClientes(int *contClientes, Cliente vectorClientes[], int posicion){
+    for(int i = posicion; i<(*contClientes)-1; i++){
+        vectorClientes[i] = vectorClientes[i+1];
+    }
+    printf("\nCliente eliminado correctamente. \n\n");
+    (*contClientes)--;
+}
 
 void menuGestionarClientes(){
     printf("--------- Gestion Clientes ---------\n");
@@ -209,6 +216,30 @@ int submenuActualizarClientes(int *contClientes, Cliente vectorClientes[]){
     }
 }
 
+int submenuEliminarClientes(int *contClientes, Cliente vectorClientes[]){
+    if((*contClientes)==0){
+        printf("\nNingun cliente ha sido registrado.\n\n");
+        return 0;
+    }
+    int id;
+    printf("Ingrese el ID del cliente: ");
+    scanf("%d", &id);
+    int clienteEncontrado = -1;
+    int i;
+    int posicion;
+    for(i=0; i<(*contClientes); i++){
+        if(vectorClientes[i].idCliente == id){
+            clienteEncontrado = 1;
+            posicion = i;
+            eliminarClientes(contClientes, vectorClientes, posicion);
+            break;
+        }
+    }
+    if(clienteEncontrado == -1){
+        printf("\nCliente no encontrado.\n");
+    }
+}
+
 void gestionarMenus(int opcion, Cliente vectorClientes[], int *contClientes){
     Cliente miCliente;
     switch(opcion){
@@ -228,6 +259,8 @@ void gestionarMenus(int opcion, Cliente vectorClientes[], int *contClientes){
                         case opcionActualizarClientes:
                             submenuActualizarClientes(contClientes, vectorClientes);
                             break;
+                        case opcionEliminarClientes:
+                            submenuEliminarClientes(contClientes, vectorClientes);
                     }
                 }
             break;
@@ -252,9 +285,3 @@ void main(){
         gestionarMenus(opcion, vectorClientes, &contClientes);
     }
 }
-
-// Pipe: Hay que agregar pausas cuando uno elige mostrar clientes, y cuando en la opcion de actualizar cliente uno ingresa un id que no corresponde
-// tambien hay que crear el eliminar
-
-
-
