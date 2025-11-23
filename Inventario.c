@@ -252,3 +252,9 @@ void main(){
         gestionarMenus(opcion, vectorClientes, &contClientes);
     }
 }
+
+// Pipe: Hay que agregar pausas cuando uno elige mostrar clientes, y cuando en la opcion de actualizar cliente uno ingresa un id que no corresponde
+// tambien hay que crear el eliminar
+
+
+
