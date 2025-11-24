@@ -57,11 +57,7 @@ typedef struct {
 
 
 typedef struct {
-    int idVenta;
-    Fecha fechaVenta;
-    Cliente cliente;
-    Insumos insumos;
-    float valorTotal;
+    
 } Venta;
 
 // Funciones Cliente
@@ -187,7 +183,7 @@ void menuGestionarClientes(){
 
 Producto ingresarProducto(){
     Producto elProducto;
-    printf("--------- Ingresar Ptoducto ---------\n");
+    printf("--------- Ingresar Producto ---------\n");
     printf("\nTipo de producto: ");
     printf("\n1. Equipos. ");
     printf("\n2. Insumos. ");
@@ -632,12 +628,26 @@ int submenuEliminarClientes(int *contClientes, Cliente vectorClientes[]){
         if(vectorClientes[i].idCliente == id){
             clienteEncontrado = 1;
             posicion = i;
-            printf("Cliente encontrado.\n");
             int pausa;
-            printf("\nDigite 0 para confirmar la eliminacion del cliente...");
+            printf("\n--------- Eliminacion de cliente ---------\n");
+            printf("\n0. Cancelar. ");
+            printf("\n1. Confirmar. ");
+            printf("\n\n----------------------------------------");
+            printf("\nIngrese la opcion: ");
             scanf("%d", &pausa);
             LIMPIARPANTALLA;
-            eliminarClientes(contClientes, vectorClientes, posicion);
+            switch(pausa){
+                case 0:
+                    printf("La eliminacion fue cancelada.\n");
+                    int pausa2;
+                    printf("\n\nDigite 0 para continuar...");
+                    scanf("%d", &pausa2);
+                    LIMPIARPANTALLA;
+                    break;
+                case 1:
+                    eliminarClientes(contClientes, vectorClientes, posicion);
+                    break;
+            }
             break;
         }
         LIMPIARPANTALLA;
@@ -790,7 +800,8 @@ int submenuEliminarProductos(int *contProductos, Producto vectorProductos[]){
             posicion = i;
             printf("Producto encontrado.\n");
             int pausa;
-            printf("\nDigite 0 para confirmar la eliminacion del producto...");
+            printf("\nDigite 0 para cancelar.");
+            printf("\nDigite 0 para cancelar.");
             scanf("%d", &pausa);
             LIMPIARPANTALLA;
             eliminarProductos(contProductos, vectorProductos, posicion);
