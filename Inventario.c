@@ -87,10 +87,10 @@ Cliente crearCliente(){
 void mostrarClientes(Cliente miCliente, int cont){
         printf("--------- Cliente #%d ---------", cont);
         printf("\nID: %d", miCliente.idCliente);
-        printf("\n\nNombre: %s", miCliente.nombreCompleto);
-        printf("\nDireccion: %s", miCliente.direccionCliente);
-        printf("\nTelefono: %s", miCliente.telefonoCliente);
-        printf("\nEstrato: %d\n\n", miCliente.estrato);
+        printf("\nNombre: %s", miCliente.nombreCompleto);
+        printf("Direccion: %s", miCliente.direccionCliente);
+        printf("Telefono: %s", miCliente.telefonoCliente);
+        printf("Estrato: %d\n\n", miCliente.estrato);
 
 }
 
@@ -346,9 +346,6 @@ void mostrarProductos(Producto elProducto, int cont){
         printf("\nValor Venta: %.0f", elProducto.valorVenta);
         printf("\nCantidad: %d", elProducto.CantidadProducto);
         printf("\nFecha de Compra: %f\n\n", elProducto.fechaCompra);
-        int pausa;
-        printf("\nDigite 0 para continuar...");
-        scanf("%d", &pausa);
 }
 
 
@@ -680,6 +677,9 @@ void submenuMostrarProductos(int contProductos, Producto vectorProductos[]){
     for(int i = 0; i < contProductos; i++){
         mostrarProductos(vectorProductos[i], i+1);
     }
+    int pausa;
+        printf("\nDigite 0 para continuar...");
+        scanf("%d", &pausa);
 }
 
 int submenuActualizarProductos(int *contProductos, Producto vectorProductos[]){
