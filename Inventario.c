@@ -5,7 +5,6 @@
 #define SALTARLINEA printf("\n"); 
 
 //Estructuras
-//Andres por que metio tantas lineas
 typedef enum {
     menuClientes = 1,
     menuProductos, //Cambio insumo a productos
