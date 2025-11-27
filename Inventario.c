@@ -24,6 +24,7 @@ typedef enum {
     opcionMostrarProductos,
     opcionActualizarProductos,
     opcionEliminarProductos,
+    opcionInformeInventario,
 } Productos;
 
 typedef struct {
@@ -32,8 +33,6 @@ typedef struct {
     int ano;
 } Fecha;
 
-
-
 typedef struct {
     int idCliente;
     char nombreCompleto[50];
@@ -41,8 +40,6 @@ typedef struct {
     char telefonoCliente[15];
     int estrato;
 } Cliente;
-
-
 
 typedef struct {
     int idProducto;
@@ -54,11 +51,15 @@ typedef struct {
     Fecha fechaCompra;
 } Producto;
 
-
-
 typedef struct {
     
 } Venta;
+
+
+
+
+
+
 
 // Funciones Cliente
 
@@ -190,8 +191,7 @@ Producto ingresarProducto(){
     printf("\n\n----------------------------------------");
     printf("\nIngrese la opcion: ");
     scanf("%d", &elProducto.tipoProducto);
-    char c__buffer2[20];
-    fgets(c__buffer2, 20, stdin);
+    
    
     switch(elProducto.tipoProducto){
         printf("\nNombre del Producto: ");
@@ -202,8 +202,6 @@ Producto ingresarProducto(){
         printf("\n3. Estabilizador. ");
         printf("\n\n Ingrese una opcion. ");
         scanf("%d", &elProducto.nombreProducto);
-        char c__buffer2[20];
-        fgets(c__buffer2, 20, stdin);
         break;
 
         case 2:
@@ -214,7 +212,6 @@ Producto ingresarProducto(){
         printf("\n4. Amarras. ");
         printf("\n\n Ingrese una opcion. ");
         scanf("%d", &elProducto.nombreProducto);
-        
         break;
     }
 
@@ -249,7 +246,6 @@ Producto ingresarProducto(){
                 break;
             }
         break; 
-
         
     }
     
@@ -290,13 +286,17 @@ Producto ingresarProducto(){
         break;
     }
 
-
+    LIMPIARPANTALLA
     printf("Cantidad del producto: ");
     scanf("%d", &elProducto.CantidadProducto);
-    
-    printf("Fecha de Compra: ");
-    scanf("%c", &elProducto.fechaCompra);
-       
+    LIMPIARPANTALLA
+    printf("Fecha de Compra (DD/MM/AAAA):\n");
+    printf("Dia:");
+    scanf("%d", &elProducto.fechaCompra.dia);
+    printf("Mes:");
+    scanf("%d", &elProducto.fechaCompra.mes);
+    printf("Ano:");
+    scanf("%d", &elProducto.fechaCompra.ano);
     
     printf("\nProducto registrado exitosamente. \n\n");
     return elProducto;
@@ -305,47 +305,50 @@ Producto ingresarProducto(){
 
 
 void mostrarProductos(Producto elProducto, int cont){
-        printf("\n\n--------- Producto #%d ---------", cont);
-        printf("\nID : %d", elProducto.idProducto);
-        if(elProducto.tipoProducto==1){
-            printf("\nTipo: Equipo");
-        }else{
-            printf("\nTipo: Insumo");
-        }
+
+    char tipo[20]; 
+    char nombre[20];   
+       
+    if(elProducto.tipoProducto==1){
+        
+        strcpy(tipo,"Equipo");
                 
-        switch (elProducto.idProducto){
+    }else{
+        strcpy(tipo,"Insumo");
+    }
+                
+    switch (elProducto.idProducto){
         case 1101:
-        printf("\nNombre: Router");
+        strcpy(nombre,"Router");
         break;
 
         case 1201:
-        printf("\nNombre: Antena");
+        strcpy(nombre,"Antena");
         break;
 
         case 1301:
-        printf("\nNombre: Estabilizador");
+        strcpy(nombre,"Estabilizador");
         break;
 
         case 2101:
-        printf("\nNombre: Cable UTP");
+        strcpy(nombre,"Cable UTP");
         break;
 
         case 2201:
-        printf("\nNombre: Conector RJ45");
+        strcpy(nombre,"Conector RJ45");
         break;
 
         case 2301:
-        printf("\nNombre: Grapas");
+        strcpy(nombre,"Grapas");
         break;
 
         case 2401:
-        printf("\nNombre: Amarras");
+        strcpy(nombre,"Amarras");
         break;
     }
-        printf("\nValor Compra: %d", elProducto.valorCompra);
-        printf("\nValor Venta: %.0f", elProducto.valorVenta);
-        printf("\nCantidad: %d", elProducto.CantidadProducto);
-        printf("\nFecha de Compra: %f\n\n", elProducto.fechaCompra);
+   
+    printf("|  %4d  |  %7s |%-13s|  %7d   |  %7.0f  |  %3d   |%2d/%2d/%4d|\n"    , elProducto.idProducto, tipo, nombre,  elProducto.valorCompra, elProducto.valorVenta, elProducto.CantidadProducto, elProducto.fechaCompra.dia,elProducto.fechaCompra.mes,elProducto.fechaCompra.ano);
+    printf("+--------+----------+-------------+------------+-----------+--------+----------+\n");
 }
 
 
@@ -518,6 +521,7 @@ void menuGestionarProductos(){
     printf("\n2. Mostrar Productos. ");
     printf("\n3. Actualizar Productos. ");
     printf("\n4. Eliminar Productos. ");
+    
     printf("\n\n0. Atras");
     printf("\n\n----------------------------------------");
     printf("\nIngrese la opcion: ");
@@ -671,6 +675,9 @@ void submenuCrearProductos(Producto vectorProductos[], int *contProductos){
 
 void submenuMostrarProductos(int contProductos, Producto vectorProductos[]){
     LIMPIARPANTALLA;
+    printf("+--------+----------+-------------+------------+-----------+--------+----------+\n");
+    printf("|   ID   |   Tipo   |   Nombre    |Valor Compra|Valor Venta|Cantidad|    Mes   |\n"); 
+    printf("+--------+----------+-------------+------------+-----------+--------+----------+\n");
     if(contProductos==0){
         printf("\nNingun producto ha sido registrado.\n\n");
         }
@@ -800,8 +807,7 @@ int submenuEliminarProductos(int *contProductos, Producto vectorProductos[]){
             posicion = i;
             printf("Producto encontrado.\n");
             int pausa;
-            printf("\nDigite 0 para cancelar.");
-            printf("\nDigite 0 para cancelar.");
+            printf("\nDigite 0 para confirmar la eliminacion del producto...");
             scanf("%d", &pausa);
             LIMPIARPANTALLA;
             eliminarProductos(contProductos, vectorProductos, posicion);
@@ -861,6 +867,9 @@ void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProduct
                         case opcionEliminarProductos:
                             submenuEliminarProductos(contProductos, vectorProductos);
                             break;
+                        case opcionInformeInventario:
+                            informeInventario(*contProductos, vectorProductos);
+                            break;
                     }
                 }
             break;
@@ -869,6 +878,55 @@ void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProduct
 
             break;
         }
+}
+
+// Funcion Especial
+void informeInventario( int contProductos,Producto vectorProductos[]){
+int controuters=0;
+int contestabilizador=0;
+int contantenas=0;
+int contutp=0;
+int contrj45=0;
+int contgrapas=0;
+int contamarras=0;
+
+    if((contProductos)==0){
+        printf("\nNingun producto ha sido registrado.\n\n");
+        }
+    for(int i = 0; i < contProductos; i++){
+        switch(vectorProductos[i].idProducto){
+            case 1101:
+            controuters=controuters+vectorProductos[i].CantidadProducto;
+            break;
+            case 1201:
+            contantenas=contantenas+vectorProductos[i].CantidadProducto;
+            break;
+            case 1301:
+            contestabilizador=contestabilizador+vectorProductos[i].CantidadProducto;
+            break;
+            case 2101:
+            contutp=contutp+vectorProductos[i].CantidadProducto;
+            break;
+            case 2201:
+            contrj45=contrj45+vectorProductos[i].CantidadProducto;
+            break;
+            case 2301:
+            contgrapas=contgrapas+vectorProductos[i].CantidadProducto;
+            break;
+            case 2401:
+            contamarras=contamarras+vectorProductos[i].CantidadProducto;
+            break;
+        }
+       
+    }
+    printf ("%d \n",controuters);
+    printf ("%d \n",contestabilizador);
+    printf ("%d \n",contantenas);
+    printf ("%d \n",contutp);
+    printf ("%d \n",contrj45);
+    printf ("%d \n",contgrapas);
+    printf ("%d \n",contamarras);
+    
 }
 
 void main(){
@@ -889,5 +947,12 @@ void main(){
 }
 
 
-// En el codigo de eliminar, sale por pantalla que si esta seguro de eliminar, 0 para continuar, pero cual es la opcion para desistir de eliminar?
-// toca vereificar las pausas porque como me quedo a mi en el "mostrar", no me gusto 
+
+
+
+
+
+// Recuerde Ingresar las funciones para guardar y actualizar archivo
+// Recuerde la Funcion de Recursividad
+// si le queda tiempo revisar lo de las fechas 
+// toca vereificar las pausas en producto (yo me encargo) porque como me quedo a mi en el "mostrar", no me gusto 
