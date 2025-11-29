@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define LIMPIARPANTALLA system("clear"); //cls 
+#define LIMPIARPANTALLA system("cls"); //cls 
 #define MOSTRAREMPRESA printf("\nAAA Conections");
 #define SALTARLINEA printf("\n"); 
 
 //Estructuras
+
 typedef enum {
     menuClientes = 1,
     menuProductos, //Cambio insumo a productos
@@ -24,6 +25,7 @@ typedef enum {
     opcionMostrarProductos,
     opcionActualizarProductos,
     opcionEliminarProductos,
+    opcionInformeInventario,
 } Productos;
 
 typedef enum {
@@ -39,7 +41,6 @@ typedef struct {
     int ano;
 } Fecha;
 
-
 typedef struct {
     int idCliente;
     char nombreCompleto[50];
@@ -48,8 +49,6 @@ typedef struct {
     int estrato;
 } Cliente;
 
-
-
 typedef struct {
     int idProducto;
     char tipoProducto;
@@ -57,18 +56,16 @@ typedef struct {
     int valorCompra;
     float valorVenta;
     int CantidadProducto;
-    int cantidadVenta;
     Fecha fechaCompra;
 } Producto;
 
-
 typedef struct {
-    int idCliente;
-    char nombreCliente[50];
-    Producto producto[100];
-    float totalVenta;
-    Fecha fechaDeVenta;
     int idVenta;
+    int idCliente;
+    int idProducto;
+    int cantidadVendida;
+    float valorTotal;
+    Fecha fechaVenta;
 } Venta;
 
 // Funciones Cliente
@@ -102,7 +99,6 @@ void mostrarClientes(Cliente miCliente, int cont){
         printf("Direccion: %s", miCliente.direccionCliente);
         printf("Telefono: %s", miCliente.telefonoCliente);
         printf("Estrato: %d\n\n", miCliente.estrato);
-
 }
 
 
@@ -201,20 +197,15 @@ Producto ingresarProducto(){
     printf("\n\n----------------------------------------");
     printf("\nIngrese la opcion: ");
     scanf("%d", &elProducto.tipoProducto);
-    char c__buffer2[20];
-    fgets(c__buffer2, 20, stdin);
+    printf("\nNombre del Producto: ");
    
     switch(elProducto.tipoProducto){
-        printf("\nNombre del Producto: "); 
-        
         case 1:
         printf("\n1. Router. ");
         printf("\n2. Antena. ");
         printf("\n3. Estabilizador. ");
         printf("\n\n Ingrese una opcion. ");
         scanf("%d", &elProducto.nombreProducto);
-        char c__buffer2[20];
-        fgets(c__buffer2, 20, stdin);
         break;
 
         case 2:
@@ -225,7 +216,6 @@ Producto ingresarProducto(){
         printf("\n4. Amarras. ");
         printf("\n\n Ingrese una opcion. ");
         scanf("%d", &elProducto.nombreProducto);
-        
         break;
     }
 
@@ -260,7 +250,6 @@ Producto ingresarProducto(){
                 break;
             }
         break; 
-
         
     }
     
@@ -301,13 +290,17 @@ Producto ingresarProducto(){
         break;
     }
 
-
+    LIMPIARPANTALLA
     printf("Cantidad del producto: ");
     scanf("%d", &elProducto.CantidadProducto);
-    
-    printf("Fecha de Compra: ");
-    scanf("%c", &elProducto.fechaCompra);
-       
+    LIMPIARPANTALLA
+    printf("Fecha de Compra (DD/MM/AAAA):\n");
+    printf("Dia:");
+    scanf("%d", &elProducto.fechaCompra.dia);
+    printf("Mes:");
+    scanf("%d", &elProducto.fechaCompra.mes);
+    printf("Ano:");
+    scanf("%d", &elProducto.fechaCompra.ano);
     
     printf("\nProducto registrado exitosamente. \n\n");
     return elProducto;
@@ -316,47 +309,50 @@ Producto ingresarProducto(){
 
 
 void mostrarProductos(Producto elProducto, int cont){
-        printf("\n\n--------- Producto #%d ---------", cont);
-        printf("\nID : %d", elProducto.idProducto);
-        if(elProducto.tipoProducto==1){
-            printf("\nTipo: Equipo");
-        }else{
-            printf("\nTipo: Insumo");
-        }
+
+    char tipo[20]; 
+    char nombre[20];   
+       
+    if(elProducto.tipoProducto==1){
+        
+        strcpy(tipo,"Equipo");
                 
-        switch (elProducto.idProducto){
+    }else{
+        strcpy(tipo,"Insumo");
+    }
+                
+    switch (elProducto.idProducto){
         case 1101:
-        printf("\nNombre: Router");
+        strcpy(nombre,"Router");
         break;
 
         case 1201:
-        printf("\nNombre: Antena");
+        strcpy(nombre,"Antena");
         break;
 
         case 1301:
-        printf("\nNombre: Estabilizador");
+        strcpy(nombre,"Estabilizador");
         break;
 
         case 2101:
-        printf("\nNombre: Cable UTP");
+        strcpy(nombre,"Cable UTP");
         break;
 
         case 2201:
-        printf("\nNombre: Conector RJ45");
+        strcpy(nombre,"Conector RJ45");
         break;
 
         case 2301:
-        printf("\nNombre: Grapas");
+        strcpy(nombre,"Grapas");
         break;
 
         case 2401:
-        printf("\nNombre: Amarras");
+        strcpy(nombre,"Amarras");
         break;
     }
-        printf("\nValor Compra: %d", elProducto.valorCompra);
-        printf("\nValor Venta: %.0f", elProducto.valorVenta);
-        printf("\nCantidad: %d", elProducto.CantidadProducto);
-        printf("\nFecha de Compra: %f\n\n", elProducto.fechaCompra);
+   
+    printf("|  %4d  |  %7s |%-13s|  %7d   |  %7.0f  |  %3d   |%2d/%2d/%4d|\n"    , elProducto.idProducto, tipo, nombre,  elProducto.valorCompra, elProducto.valorVenta, elProducto.CantidadProducto, elProducto.fechaCompra.dia,elProducto.fechaCompra.mes,elProducto.fechaCompra.ano);
+    printf("+--------+----------+-------------+------------+-----------+--------+----------+\n");
 }
 
 
@@ -510,301 +506,223 @@ Producto actualizarProducto(Producto elProducto){
     return elProducto;
 }
 
-void eliminarProductos(int *contProductos, Producto vectorProductos[], int posicion){
+/*void eliminarProductos(int *contProductos, Producto vectorProductos[], int posicion){
+    int CantidadVacia = 0;
     for(int i = posicion; i<(*contProductos)-1; i++){
         vectorProductos[i] = vectorProductos[i+1];
     }
-    printf("\nProducto eliminado correctamente. \n\n");
+    (*contProductos)--;
+    for(int i=0; i<(*contProductos); i++){
+        if(vectorProductos[i].CantidadProducto == 0){
+            CantidadVacia = 1;
+            for(int i2 = i; i2<(*contProductos)-1; i2++){
+                vectorProductos[i2] = vectorProductos[i2+1];
+            }
+        }
+        if(CantidadVacia == 1){
+            (*contProductos)--;
+        }
+    }
+}*/
+
+void eliminarProductos(int *contProductos, Producto vectorProductos[], int posicion) {
+    for(int i = posicion; i<(*contProductos)-1; i++) {
+		vectorProductos[i] = vectorProductos[i+1];
+	}
+    (*contProductos)--;
+    printf("Producto Eliminado.");
+}
+
+// Funciones Venta
+
+Venta crearVenta(int contClientes, Cliente vectorClientes[], int *contProductos, Producto vectorProductos[]){
+    Venta miVenta = {0};
     int pausa;
+    
+    printf("--------- Crear Venta ---------\n");
+    printf("%d", (*contProductos));
+    
+    // Mostrar clientes disponibles
+    if(contClientes == 0){
+        printf("\nNo hay clientes registrados.\n");
+        printf("\nDigite 0 para continuar...");
+        scanf("%d", &pausa);
+        return miVenta;
+    }
+    
+    printf("\nIngrese el ID del cliente: ");
+    scanf("%d", &miVenta.idCliente);
+    
+    // Validar que el cliente exista
+    int clienteEncontrado = 0;
+    for(int i = 0; i < contClientes; i++){
+        if(vectorClientes[i].idCliente == miVenta.idCliente){
+            clienteEncontrado = 1;
+            break;
+        }
+    }
+    
+    if(!clienteEncontrado){
+        printf("\nCliente no encontrado.\n");
+        printf("\nDigite 0 para continuar...");
+        scanf("%d", &pausa);
+        return miVenta;
+    }
+    
+    LIMPIARPANTALLA;
+    
+    // Mostrar productos disponibles
+    if((*contProductos) == 0){
+        printf("\nNo hay productos registrados.\n");
+        printf("\nDigite 0 para continuar...");
+        scanf("%d", &pausa);
+        return miVenta;
+    }
+    
+    printf("\n--- Productos Disponibles ---\n");
+    for(int i = 0; i < (*contProductos); i++){
+        char nombre[20];
+        switch(vectorProductos[i].idProducto){
+            case 1101: strcpy(nombre,"Router"); break;
+            case 1201: strcpy(nombre,"Antena"); break;
+            case 1301: strcpy(nombre,"Estabilizador"); break;
+            case 2101: strcpy(nombre,"Cable UTP"); break;
+            case 2201: strcpy(nombre,"Conector RJ45"); break;
+            case 2301: strcpy(nombre,"Grapas"); break;
+            case 2401: strcpy(nombre,"Amarras"); break;
+            default: strcpy(nombre,"Otro"); break;
+        }
+        printf("%d. %s (ID: %d) - Cantidad: %d\n", i+1, nombre, vectorProductos[i].idProducto, vectorProductos[i].CantidadProducto);
+    }
+    
+    printf("\nSeleccione el ID del producto: ");
+    scanf("%d", &miVenta.idProducto);
+    
+    // Sumar stock total del producto (puede haber múltiples entradas con mismo id)
+    int totalStock = 0;
+    int primerIndice = -1;
+    for(int i = 0; i < (*contProductos); i++){
+        if(vectorProductos[i].idProducto == miVenta.idProducto){
+            totalStock += vectorProductos[i].CantidadProducto;
+            if(primerIndice == -1) primerIndice = i;
+        }
+    }
+    
+    if(primerIndice == -1){
+        printf("\nProducto no encontrado.\n");
+        printf("\nDigite 0 para continuar...");
+        scanf("%d", &pausa);
+        return miVenta;
+    }
+    
+    if(totalStock == 0){
+        printf("\nProducto sin stock disponible.\n");
+        printf("\nDigite 0 para continuar...");
+        scanf("%d", &pausa);
+        return miVenta;
+    }
+    
+    printf("\nStock disponible (total): %d\n", totalStock);
+    printf("\nCantidad a vender: ");
+    scanf("%d", &miVenta.cantidadVendida);
+    
+    if(miVenta.cantidadVendida > totalStock){
+        printf("\nStock insuficiente. Disponible: %d\n", totalStock);
+        printf("\nDigite 0 para continuar...");
+        scanf("%d", &pausa);
+        return miVenta;
+    }
+    
+    float precioUnitario = vectorProductos[primerIndice].valorVenta;
+    miVenta.valorTotal = miVenta.cantidadVendida * precioUnitario;
+    
+    int restante = miVenta.cantidadVendida;
+    for(int i = 0; i < (*contProductos) && restante > 0; i++){
+        if(vectorProductos[i].idProducto == miVenta.idProducto){
+            int disponibleEnEntrada = vectorProductos[i].CantidadProducto;
+            if(disponibleEnEntrada == 0) continue;
+            if(disponibleEnEntrada <= restante){
+                restante -= disponibleEnEntrada;
+                vectorProductos[i].CantidadProducto = 0;
+                if (vectorProductos[i].CantidadProducto == 0) {
+                    printf("\nEl producto ya no tiene unidades en stock\n");
+                    eliminarProductos(contProductos, vectorProductos, i);
+                    printf("%d", (*contProductos));
+                }
+            } else {
+                vectorProductos[i].CantidadProducto -= restante;
+                restante = 0;
+            }
+        }
+    }
+    // Fecha de venta
+    printf("\nFecha de Venta (DD/MM/AAAA):\n");
+    printf("Dia: ");
+    scanf("%d", &miVenta.fechaVenta.dia);
+    printf("Mes: ");
+    scanf("%d", &miVenta.fechaVenta.mes);
+    printf("Ano: ");
+    scanf("%d", &miVenta.fechaVenta.ano);
+    
+    printf("\n\nVenta registrada exitosamente.\n");
+    printf("Valor Total: $%.2f\n\n", miVenta.valorTotal);
     printf("\nDigite 0 para continuar...");
     scanf("%d", &pausa);
     LIMPIARPANTALLA;
-    (*contProductos)--;
-}
-
-//Funciones Venta
-
-//Funcion para crear una venta
-Venta crearVenta(int *contClientes, Cliente vectorClientes[], int *contProductos, Producto vectorProductos[], int *contVentas, int *contVectorproductos){
-    //Crear venta
-    Venta miVenta;
-
-    int idCliente = 0;
-    int pausa;
-    int igual = 0;
-    int idProducto;
-    int cantidadVenta = 0;
-    char cerrarVenta = 'N';
-
-    printf("--------- Crear Venta ---------\n");
-
-    //Validar que haya clientes creados
-    if (*contClientes == 0) {
-        printf("\nAun no hay clientes creados, debes crear uno desde el menu principal\n");
-        printf("\nDigite 0 para continuar...");
-        scanf("%d", &pausa);
-        miVenta.idVenta = 0;
-        return miVenta;
-    }
-
-    //Validar que hay productos creados
-     if (*contProductos == 0) {
-        printf("\nAun no hay productos creados, debes crear al menos uno\n");
-        printf("\nDigite 0 para continuar...");
-        scanf("%d", &pausa);
-        miVenta.idVenta = 0;
-        return miVenta;
-    }
-
-    //Mostrar clientes creados
-
-    //Ingresar ID cliente
-    printf("Ingresa el ID del cliente:\n");
-    scanf("%d", &idCliente);
-    char c__buffer[20];
-    fgets(c__buffer, 20, stdin);
-
-    //Repetir hasta que se ingrese un ID de cliente valido
-    while(igual == 0) {
-        //Validar que si exista un cliente con ese ID
-        for (int i = 0 ; i < *contClientes && igual == 0 ; i++) {
-            if (vectorClientes[i].idCliente == idCliente) {
-                //Asignar el nombre del cliente a la venta
-                strcpy(miVenta.nombreCliente, vectorClientes[i].nombreCompleto);
-                LIMPIARPANTALLA;
-                //Ingresar fecha
-                printf("\nIngresa la fecha para la venta:\n");
-                //ingresar dia
-                printf("\nIngresa el dia:\n");
-                scanf("%d", &miVenta.fechaDeVenta.dia);
-                c__buffer[20];
-                fgets(c__buffer, 20, stdin);
-
-                //ingresar mes
-                printf("\nIngresa el mes:\n");
-                scanf("%d", &miVenta.fechaDeVenta.mes);
-                c__buffer[20];
-                fgets(c__buffer, 20, stdin);
-
-                //ingresar año
-                printf("\nIngresa el anio:\n");
-                scanf("%d", &miVenta.fechaDeVenta.ano);
-                c__buffer[20];
-                fgets(c__buffer, 20, stdin);
-
-                igual = 1;
-            }
-        }
-
-        if (igual == 0) {
-            printf("\nNo existe cliente con ese ID\n");
-            printf("Ingrese un ID valido:\n");
-            scanf("%d", &idCliente);
-            c__buffer[20];
-            fgets(c__buffer, 20, stdin);
-        }
-    }
-
-    //Si el ID del cliente es valido, continuamos con el programa
-    if (igual == 1) {
-
-        //Repetimos mientras no se cierre la venta
-        while (cerrarVenta != 'S' && cerrarVenta != 's') {
-
-            //Validamos que aun hayan productos en stock
-            if (*contProductos == 0) {
-                printf("\nYa no quedan mas productos en stock, la venta se cerrara.\n");
-
-                //Si cerramos la venta, le damos su respectivo ID
-                miVenta.idVenta = *contVentas+1;
-
-                printf("\nVenta creada de manera satisfactoria\n");
-                printf("\nDigite 0 para continuar...");
-                scanf("%d", &pausa);
-
-                return miVenta;
-            }
-
-            miVenta.idCliente = idCliente;
-            printf("\nProductos disponibles:\n");
-            submenuMostrarProductos(*contProductos, vectorProductos);
-            printf("\nIngrese el ID del producto\n");
-            scanf("%d", &idProducto);
-            c__buffer[20];
-            fgets(c__buffer, 20, stdin);
-
     
-            igual = 0;
-        
-            //Repetir hasta que se ingrese un ID valido
-            while (igual == 0) {
-                //validar que si exista un producto con ese ID
-                for (int i = 0 ; i < *contProductos && igual == 0 ; i++) {
-                    if (vectorProductos[i].idProducto == idProducto && vectorProductos[i].CantidadProducto > 0) {
+    return miVenta;
+}
 
-                        //Guardamos los datos del producto
-                        miVenta.producto[*contVectorproductos].nombreProducto = vectorProductos[i].nombreProducto;
-                        miVenta.producto[*contVectorproductos].tipoProducto = vectorProductos[i].tipoProducto;
-                        miVenta.producto[*contVectorproductos].valorVenta = vectorProductos[i].valorVenta;
+// Funcion Especial
+void informeInventario( int contProductos,Producto vectorProductos[]){
+int controuters=0;
+int contestabilizador=0;
+int contantenas=0;
+int contutp=0;
+int contrj45=0;
+int contgrapas=0;
+int contamarras=0;
 
-                        igual = 1;
-                    }
-                }
-
-                //En caso de que no exista el ID, volver a preguntar
-                if (igual == 0) {
-                    printf("\nDebes ingresar un ID de producto valido y que tenga cantidad en stock\n");
-                    scanf("%d", &idProducto);
-                    c__buffer[20];
-                    fgets(c__buffer, 20, stdin);
-                }
-            }
-
-            //Ingresar el ID del producto
-            miVenta.producto[*contVectorproductos].idProducto = idProducto;
-            printf("\nIngrese la cantidad: \n");
-            scanf("%d", &cantidadVenta);
-            c__buffer[20];
-            fgets(c__buffer, 20, stdin);
-
-            igual = 0;
-
-            //Repetimos hasta que se ingrese una cantidad adecuada
-            while (igual == 0) {
-
-                //Validamos que la cantidad sea menor o igual a lo que hay en stock
-                for (int i = 0 ; i < *contProductos && igual == 0 ; i++) {
-                    if (vectorProductos[i].idProducto == idProducto) {
-                        if (cantidadVenta <= vectorProductos[i].CantidadProducto && cantidadVenta > 0) {
-                            miVenta.producto[*contVectorproductos].cantidadVenta = cantidadVenta;
-                            igual = 1;
-
-                            //Restamos la cantidad de venta a la cantidad del producto en stock
-                            vectorProductos[i].CantidadProducto -= cantidadVenta;
-                            if (vectorProductos[i].CantidadProducto == 0) {
-                                printf("\nEl producto ya no tiene unidades en stock\n");
-                                eliminarProductos(contProductos, vectorProductos, i);
-                            }
-                        } else {
-                            printf("\nNo existe esa cantidad, elige otro monto: \n");
-                            scanf("%d", &cantidadVenta);
-                            c__buffer[20];
-                            fgets(c__buffer, 20, stdin);
-                        }
-                    }
-                }
-            }
-
-            //Aumentamos el contador de los productos de la venta
-            (*contVectorproductos)++;
-
-            LIMPIARPANTALLA;
-            printf("\nQuieres continuar igresando mas productos, o cerramos la venta?\n");
-            printf("presiona S, si quieres cerrar la venta o presiona cualquier tecla para seguir registrando\n");
-            scanf("%s", &cerrarVenta);
-            c__buffer[20];
-            fgets(c__buffer, 20, stdin);
+    if((contProductos)==0){
+        printf("\nNingun producto ha sido registrado.\n\n");
         }
-
-        //Si cerramos la venta, le damos su respectivo ID
-        miVenta.idVenta = *contVentas+1;
-        printf("\nVenta creada de manera satisfactoria\n");
-
-        printf("\nDigite 0 para continuar...");
-        scanf("%d", &pausa);
-
-        return miVenta;
-
-    //Si no existe un ID de cliente valido, volver al menu    
-    } else {
-        printf("\nNo hay ningun cliente con ese ID");
-        printf("\nDigite 0 para continuar...");
-        scanf("%d", &pausa);
-        miVenta.idVenta = 0;
-        return miVenta;
-    }
-}
-
-void mostrarVentas(Venta miVenta, int cont, int contVectorproductos){
-    if (miVenta.idVenta != 0) {
-        float totalVentaProductos = 0;
-
-        printf("--------- Venta #%d ---------", cont);
-        printf("\nID Venta: %d", miVenta.idVenta);
-        printf("\nID Cliente: %d", miVenta.idCliente);
-        printf("\nCliente: %s", miVenta.nombreCliente);
-        printf("\nFecha Venta: %d-%d-%d\n", miVenta.fechaDeVenta.dia, miVenta.fechaDeVenta.mes, miVenta.fechaDeVenta.ano);
-        printf("\nProductos:\n");
-
-        //Recorremos todos los productos de la venta
-        for (int i = 0 ; i < contVectorproductos ; i++) {
-            if (miVenta.producto[i].idProducto != 0) {
-                printf("\nID producto: %d", miVenta.producto[i].idProducto);
-                printf("\nNombre producto: %d", miVenta.producto[i].nombreProducto);
-                printf("\nTipo producto: %d", miVenta.producto[i].tipoProducto);
-                printf("\nCantidad producto: %d", miVenta.producto[i].cantidadVenta);
-                totalVentaProductos += miVenta.producto[i].cantidadVenta * miVenta.producto[i].valorVenta;
-                printf("\nTotal producto: %f\n", miVenta.producto[i].cantidadVenta * miVenta.producto[i].valorVenta);
-            }
+    for(int i = 0; i < contProductos; i++){
+        switch(vectorProductos[i].idProducto){
+            case 1101:
+            controuters=controuters+vectorProductos[i].CantidadProducto;
+            break;
+            case 1201:
+            contantenas=contantenas+vectorProductos[i].CantidadProducto;
+            break;
+            case 1301:
+            contestabilizador=contestabilizador+vectorProductos[i].CantidadProducto;
+            break;
+            case 2101:
+            contutp=contutp+vectorProductos[i].CantidadProducto;
+            break;
+            case 2201:
+            contrj45=contrj45+vectorProductos[i].CantidadProducto;
+            break;
+            case 2301:
+            contgrapas=contgrapas+vectorProductos[i].CantidadProducto;
+            break;
+            case 2401:
+            contamarras=contamarras+vectorProductos[i].CantidadProducto;
+            break;
         }
-
-        printf("\n\nTotal venta: %f\n", totalVentaProductos);
+       
     }
+    printf ("%d \n",controuters);
+    printf ("%d \n",contestabilizador);
+    printf ("%d \n",contantenas);
+    printf ("%d \n",contutp);
+    printf ("%d \n",contrj45);
+    printf ("%d \n",contgrapas);
+    printf ("%d \n",contamarras);
+    
 }
 
-Venta actualizarVenta(Venta miVenta, int contVenta){
-     int opcion = 1;
-    while(opcion != 0){
-        printf("\n--------- Actualizar Productos Venta ---------\n");
-        printf("\n1. Cambiar producto. ");
-        printf("\n2. Eliminar un producto. ");
-        printf("\n\n0. Atras");
-        printf("\n\n----------------------------------------");
-        printf("\nIngrese la opcion: ");
-        scanf("%d", &opcion);
-        LIMPIARPANTALLA;
-        char c__buffer2[20];
-        fgets(c__buffer2, 20, stdin);
-        switch(opcion){
-            case 0:
-                return miVenta;
-                break;
-            case 1:
-                mostrarVentas(miVenta, contVenta, int contVectorproductos);
-            case 2:
-                printf("\nActualice su Direccion: ");
-                fgets(miCliente.direccionCliente, 50, stdin);
-                printf("\nDireccion Actualizada.\n");
-                int pausa2;
-                printf("\nDigite 0 para continuar...");
-                scanf("%d", &pausa2);  
-                LIMPIARPANTALLA;
-                break;
-            case 3:
-                printf("\nActualice su Telefono: ");
-                fgets(miCliente.telefonoCliente, 15, stdin);
-                printf("\nTelefono Actualizado.\n");
-                int pausa3;
-                printf("\nDigite 0 para continuar...");
-                scanf("%d", &pausa3); 
-                LIMPIARPANTALLA;
-                break;
-            case 4:
-                printf("\nActualice su Estrato: ");
-                scanf("%d", &miCliente.estrato);
-                printf("\nEstrato Actualizado.\n");
-                int pausa4;
-                printf("\nDigite 0 para continuar...");
-                scanf("%d", &pausa4);  
-                LIMPIARPANTALLA;
-                break;
-        }
-    }
-    return miCliente;
-}
-}
-
-//Menus
+//FINAL FUNCION ESPECIAL
 
 void menuGestionarProductos(){
     printf("--------- Gestion Productos ---------\n");
@@ -812,6 +730,7 @@ void menuGestionarProductos(){
     printf("\n2. Mostrar Productos. ");
     printf("\n3. Actualizar Productos. ");
     printf("\n4. Eliminar Productos. ");
+    
     printf("\n\n0. Atras");
     printf("\n\n----------------------------------------");
     printf("\nIngrese la opcion: ");
@@ -828,8 +747,6 @@ void menuGestionarVentas(){
     printf("\nIngrese la opcion: ");
 }
 
-
-
 // Funcion Menu Principal
 
 void menuPrincipal(){
@@ -844,7 +761,7 @@ void menuPrincipal(){
 
 //Gestion de Todos los menus en el main!!
 
-    //Funciones submenu (Para resolver las tareas una por una con funciones, no bloques de codigo gigantes)
+    //Funciones submenu (Para resolver las tareas una por una con funciones, no blo ques de codigo gigantes)
 
 void submenuCrearClientes(Cliente vectorClientes[], int *contClientes){
     LIMPIARPANTALLA;
@@ -975,12 +892,15 @@ void submenuCrearProductos(Producto vectorProductos[], int *contProductos){
 
 
 
-void submenuMostrarProductos(int contProductos, Producto vectorProductos[]){
+void submenuMostrarProductos(int *contProductos, Producto vectorProductos[]){
     LIMPIARPANTALLA;
-    if(contProductos==0){
+    printf("+--------+----------+-------------+------------+-----------+--------+----------+\n");
+    printf("|   ID   |   Tipo   |   Nombre    |Valor Compra|Valor Venta|Cantidad|    Mes   |\n"); 
+    printf("+--------+----------+-------------+------------+-----------+--------+----------+\n");
+    if((*contProductos)==0){
         printf("\nNingun producto ha sido registrado.\n\n");
         }
-    for(int i = 0; i < contProductos; i++){
+    for(int i = 0; i < (*contProductos); i++){
         mostrarProductos(vectorProductos[i], i+1);
     }
     int pausa;
@@ -1106,11 +1026,14 @@ int submenuEliminarProductos(int *contProductos, Producto vectorProductos[]){
             posicion = i;
             printf("Producto encontrado.\n");
             int pausa;
-            printf("\nDigite 0 para cancelar.");
-            printf("\nDigite 0 para cancelar.");
+            printf("\nDigite 0 para confirmar la eliminacion del producto...");
             scanf("%d", &pausa);
             LIMPIARPANTALLA;
             eliminarProductos(contProductos, vectorProductos, posicion);
+            printf("\nProducto eliminado correctamente. \n\n");
+            printf("\nDigite 0 para continuar...");
+            scanf("%d", &pausa);
+            LIMPIARPANTALLA;
             break;
         }
         LIMPIARPANTALLA;
@@ -1124,80 +1047,19 @@ int submenuEliminarProductos(int *contProductos, Producto vectorProductos[]){
     }
 }
 
-//submenus Ventas
-
-void submenuCrearVentas(Venta vectorVentas[], int *contVentas, int *contClientes, Cliente vectorClientes[], int *contProductos, Producto vectorProductos[], int *contVectorproductos){
+void submenuCrearVenta(Venta vectorVentas[], int *contVentas, int contClientes, Cliente vectorClientes[], int *contProductos, Producto vectorProductos[]){
     LIMPIARPANTALLA;
     Venta miVenta;
-    miVenta = crearVenta(contClientes, vectorClientes, contProductos, vectorProductos, contVentas, contVectorproductos);
-    if (miVenta.idVenta != 0) {
-        vectorVentas[*contVentas] = miVenta;
-        (*contVentas)++;
-    }
+    miVenta = crearVenta(contClientes, vectorClientes, contProductos, vectorProductos);
+    vectorVentas[*contVentas] = miVenta;
+    (*contVentas)++;
     LIMPIARPANTALLA;
 }
 
-void submenuMostrarVentas(int contVentas, Venta vectorVentas[], int contVectorproductos){
-
-    LIMPIARPANTALLA;
-    if(contVentas==0){
-        printf("\nNinguna venta ha sido registrada.\n\n");
-    }
-
-    for(int i = 0; i < contVentas; i++){
-        mostrarVentas(vectorVentas[i], i+1, contVectorproductos);
-    }
-
-    int pausa;
-    printf("\nDigite 0 para continuar...");
-    scanf("%d", &pausa);
-    LIMPIARPANTALLA;
-}
-
-void submenuActualizarVentas(int *contVentas, venta vectorVentas[]){
-    LIMPIARPANTALLA;
-    Venta miVenta;
-    if((*contVentas)==0){
-        printf("\nNo se ha registrado ninguna venta.\n\n");
-        int pausa;
-        printf("\nDigite 0 para continuar...");
-        scanf("%d", &pausa);
-        LIMPIARPANTALLA;
-        return 0;
-    }
-    int id;
-    printf("\n--------- Actualizar Venta ---------\n");
-    printf("\nIngrese el ID de la venta: ");
-    scanf("%d", &id);
-    int ventaEncontrada = -1; //Si se encuentra la venta la variable es igual a 1, si es -1 no se encontro
-    int i;
-    for(i=0; i<(*contVentas); i++){
-        if(vectorVentas[i].idVenta == id){ //Si el ID de la venta se encuentra en el vector Ventas entonces ventaEcontrada = 1
-            ventaEncontrada = 1; //La venta se encontro
-            int pausa;
-            printf("\n\nVenta encontrada.\n");
-            printf("\nDigite 0 para actualizar la informacion de los productos de la venta...");
-            scanf("%d", &pausa);
-            LIMPIARPANTALLA;
-            miVenta = vectorVentas[i]; //Se encontro el vector de la venta a actualizar
-            Venta ventaActualizada = actualizarVenta(miVenta); //La funcion devuelve la venta actualizado
-            vectorVentas[i] = ventaActualizada; // la venta fue actualizada
-            break;
-        }
-    }
-    if(ventaEncontrada == -1){ //Si entra a este if es porque la venta no fue encontrada
-        printf("\n\nVenta no encontrada.\n");
-        int pausa;
-        printf("\nDigite 0 para continuar...");
-        scanf("%d", &pausa);
-        LIMPIARPANTALLA;
-    }
-}
-
-void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProductos[], Venta vectorVentas[], int *contClientes, int *contProductos, int *contVentas, int *contVectorproductos){
+void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProductos[], Venta vectorVentas[], int *contClientes,int *contProductos, int *contVentas, int *contVectorproductos){
     Cliente miCliente;
     switch(opcion){
-            case menuClientes:{
+            case menuClientes:
                 int opcionGestionarClientes = 1;
                 while(opcionGestionarClientes!=0){
                     menuGestionarClientes();
@@ -1217,9 +1079,8 @@ void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProduct
                             break;
                     }
                 }
-                break;
-            }
-            case menuProductos:;
+            break;
+            case menuProductos:
                 int opcionGestionarProductos = 1;
                 while(opcionGestionarProductos!=0){
                     menuGestionarProductos();
@@ -1230,7 +1091,7 @@ void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProduct
                             submenuCrearProductos(vectorProductos, contProductos);
                             break;
                         case opcionMostrarProductos:
-                            submenuMostrarProductos(*contProductos, vectorProductos);
+                            submenuMostrarProductos(contProductos, vectorProductos);
                             break;
                         case opcionActualizarProductos:
                             submenuActualizarProductos(contProductos, vectorProductos);
@@ -1238,11 +1099,14 @@ void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProduct
                         case opcionEliminarProductos:
                             submenuEliminarProductos(contProductos, vectorProductos);
                             break;
+                        case opcionInformeInventario:
+                            informeInventario(*contProductos, vectorProductos);
+                            break;
                     }
                 }
             break;
 
-            case menuVentas:{
+            case menuVentas:
                 int opcionGestionarVentas = 1;
                 while(opcionGestionarVentas!=0){
                     menuGestionarVentas();
@@ -1250,20 +1114,19 @@ void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProduct
                     LIMPIARPANTALLA;
                     switch(opcionGestionarVentas){
                         case opcionCrearVentas:{
-                            submenuCrearVentas(vectorVentas, contVentas, contClientes, vectorClientes, contProductos, vectorProductos, contVectorproductos);
+                            submenuCrearVenta(vectorVentas, contVentas, *contClientes, vectorClientes, contProductos, vectorProductos);
                             break;
                         case opcionMostrarVentas:
-                            submenuMostrarVentas(*contVentas, vectorVentas, *contVectorproductos);
+                            
                             break;
                         case opcionActualizarVentas:
-                            submenuActualizarVentas(contVentas, vectorVentas);
+                            
                             break;
                         case opcionEliminarVentas:
                             
                             break;
                     }
                 break;
-                }
             }
         }
     }
@@ -1290,6 +1153,7 @@ void main(){
     }
 }
 
-
-// En el codigo de eliminar, sale por pantalla que si esta seguro de eliminar, 0 para continuar, pero cual es la opcion para desistir de eliminar?
-// toca vereificar las pausas porque como me quedo a mi en el "mostrar", no me gusto 
+// Recuerde Ingresar las funciones para guardar y actualizar archivo
+// Recuerde la Funcion de Recursividad
+// si le queda tiempo revisar lo de las fechas 
+// toca vereificar las pausas en producto (yo me encargo) porque como me quedo a mi en el "mostrar", no me gusto 
