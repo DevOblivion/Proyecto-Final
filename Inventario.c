@@ -70,6 +70,61 @@ typedef struct {
     Fecha fechaVenta;
 } Venta;
 
+//FUNCIONES ARCHIVOS - CLIENTES
+
+void guardarCliente(Cliente miCliente) {
+    FILE *f = fopen("clientes.txt", "a");
+
+    if (f == NULL) {
+        printf("\nError: No se pudo abrir el archivo para guardar.");
+        return;
+    }
+
+    fprintf(f, "%d|%s|%s|%s|%d\n", 
+            miCliente.idCliente, 
+            miCliente.nombreCompleto, 
+            miCliente.direccionCliente, 
+            miCliente.telefonoCliente, 
+            miCliente.estrato);
+
+    fclose(f);
+}
+
+void cargarClientes(Cliente vectorClientes[], int *contClientes) {
+    FILE *f = fopen("clientes.txt", "r");
+
+    if (f == NULL) {
+        printf("\n[Sistema] Archivo clientes.txt no encontrado. Creando nuevo...\n");
+        return; // No hay archivo, el contador queda en 0
+    }
+
+    int i = 0;
+    
+    // Leer el archivo hasta que se alcance el final (EOF)
+    while (!feof(f) && i < 100) {
+        Cliente tempCliente;
+        
+        // El *[^|] lee cualquier cosa hasta encontrar el siguiente separador |
+        int itemsLeidos = fscanf(f, "%d|%49[^|]|%49[^|]|%14[^|]|%d\n", 
+                                 &tempCliente.idCliente, 
+                                 tempCliente.nombreCompleto, 
+                                 tempCliente.direccionCliente, 
+                                 tempCliente.telefonoCliente, 
+                                 &tempCliente.estrato);
+
+        if (itemsLeidos == 5) {
+            // Si se leyeron los 5 items correctamente, lo agregamos al vector
+            vectorClientes[i] = tempCliente;
+            i++;
+        }
+    }
+
+    *contClientes = i; // Actualizamos el contador con el numero de clientes leidos
+    fclose(f);
+}
+
+//FINAL ARCHIVOS - CLIENTES
+
 // Funciones Cliente
 
 Cliente crearCliente(){
@@ -88,9 +143,13 @@ Cliente crearCliente(){
     fgets(miCliente.telefonoCliente, 15, stdin);
     printf("\nEstrato: ");
     scanf("%d", &miCliente.estrato);
-    printf("\n\nCliente creado exitosamente. \n\n");
+    
+    guardarCliente(miCliente);
+    printf("\n\nCliente creado exitosamente y GUARDADO en archivo. \n\n");
+
     printf("\nDigite 0 para continuar...");
     scanf("%d", &pausa);
+
     return miCliente;
 }
 
@@ -1520,6 +1579,7 @@ void main(){
     Cliente vectorClientes[tamanoClientes];
     Producto vectorProductos[tamanoProductos];
     Venta vectorVentas[tamanoVentas];
+    cargarClientes(vectorClientes, &contClientes);
     int opcion = 1;
     while(opcion!=0){
         LIMPIARPANTALLA;
