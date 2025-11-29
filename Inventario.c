@@ -1434,7 +1434,7 @@ void submenuEliminarVenta(int *contVentas, Venta vectorVentas[]){
 void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProductos[], Venta vectorVentas[], int *contClientes,int *contProductos, int *contVentas, int *contVectorproductos){
     Cliente miCliente;
     switch(opcion){
-            case menuClientes:
+            case menuClientes: {
                 int opcionGestionarClientes = 1;
                 while(opcionGestionarClientes!=0){
                     menuGestionarClientes();
@@ -1455,7 +1455,7 @@ void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProduct
                     }
                 }
             break;
-            case menuProductos:
+            case menuProductos:{
                 int opcionGestionarProductos = 1;
                 while(opcionGestionarProductos!=0){
                     menuGestionarProductos();
@@ -1480,8 +1480,9 @@ void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProduct
                     }
                 }
             break;
+            }
 
-            case menuVentas:
+            case menuVentas:{
                 int opcionGestionarVentas = 1;
                 while(opcionGestionarVentas!=0){
                     menuGestionarVentas();
@@ -1503,6 +1504,8 @@ void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProduct
                     }
                 }
             break;
+            }
+        }
     }
 }
 
