@@ -2,11 +2,123 @@
 |Cuba
 |3135713205
 |1
-1225089802|Adriana Morales
-|Irazu
-|3145315603
+1012458790|Laura Marcela Pérez Gómez
+|Manizales
+|3184579021
 |2
-1088008718|Julian Rojas
-|Irazu
-|3105045350
+1025693401|Carlos Andrés Ramírez Loaiza
+|Armenia
+|3148923075
+|3
+1104587923|Diana Carolina Torres Pineda
+|Pereira
+|3196745802
 |4
+1039874521|Juan Sebastián Montoya Quintero
+|Dosquebradas
+|3115498723
+|5
+1045637829|María Alejandra Castaño López
+|Cali
+|3157829034
+|6
+1054329876|Felipe Andrés Salazar Grisales
+|Medellín
+|3126745890
+|7
+1098765432|Camila Juliana Valencia Ríos
+|Bogotá
+|3204587932
+|8
+1002345678|Julián Esteban Ramírez Hoyos
+|Barranquilla
+|3009874512
+|9
+1087654321|Valentina Sofía Rincón Torres
+|Ibagué
+|3174598023
+|10
+1023489765|José Miguel García Ramírez
+|Cartagena
+|3117802345
+|11
+1034587629|Sara Daniela Quintero Marín
+|Bucaramanga
+|3129074568
+|12
+1049753186|Mateo Alejandro Cardona Ortiz
+|Santa Marta
+|3164578920
+|13
+1078945623|Paula Andrea Arango Vélez
+|Pasto
+|3194576801
+|14
+1089456712|Nicolás David Ospina Gómez
+|Montería
+|3147658920
+|15
+1009876543|Isabella María Zapata Mejía
+|Neiva
+|3007845123
+|16
+1016782345|Juan Pablo Aristizábal Cifuentes
+|Manizales
+|3176458921
+|17
+1065432198|Valeria Fernanda Ceballos Ruiz
+|Palmira
+|3124675890
+|18
+1072348965|Samuel Andrés Villegas Londoño
+|Villavicencio
+|3189045721
+|19
+1092345671|Sofía Natalia Muñoz Herrera
+|Tuluá
+|3159076432
+|20
+1008765432|Tomás Camilo Giraldo López
+|Pereira
+|3117659034
+|21
+1012349876|Karen Juliana Vargas Ríos
+|Cartago
+|3164598702
+|22
+1029873456|Andrés Felipe Serna Morales
+|Cali
+|3009756432
+|23
+1045621987|Daniela Valentina Restrepo Hoyos
+|Bello
+|3187459032
+|24
+1056712398|Miguel Ángel Castañeda Pérez
+|Envigado
+|3119087456
+|25
+1069823412|Manuela Carolina Lemos Ramírez
+|Armenia
+|3145782390
+|26
+1083412567|Juan David Calle Giraldo
+|Pereira
+|3198045231
+|27
+1094567231|Tatiana Marcela Hoyos Valencia
+|Bogotá
+|3126754980
+|28
+1105678923|Esteban Nicolás Marulanda López
+|Medellín
+|3008657342
+|29
+1112345678|Mariana Alejandra Cifuentes Ríos
+|Cali
+|3178045692
+|30
+1123456789|Camilo José Orozco Restrepo
+|Dosquebradas
+|3157846203
+|31
