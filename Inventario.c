@@ -4,6 +4,7 @@
 #define LIMPIARPANTALLA system("cls"); //cls 
 #define MOSTRAREMPRESA printf("\nAAA Conections");
 #define SALTARLINEA printf("\n"); 
+#define GUARDARARCHIVO(cliente, venta, producto) guardarArchivo(cliente, venta, producto);//Macro para guardar archivos
 
 //Estructuras
 
@@ -70,25 +71,68 @@ typedef struct {
     Fecha fechaVenta;
 } Venta;
 
-//FUNCIONES ARCHIVOS - CLIENTES
+//FUNCION MACRO GUARDAR ARCHIVO
 
-void guardarCliente(Cliente miCliente) {
-    FILE *f = fopen("clientes.txt", "a");
+void guardarArchivo(Cliente *miCliente, Venta *miVenta, Producto *miProducto) {
+    FILE *f;
+    if (miCliente != NULL) {
+        f = fopen("clientes.txt", "a");
 
-    if (f == NULL) {
-        printf("\nError: No se pudo abrir el archivo para guardar.");
-        return;
+        if (f == NULL) {
+            printf("\nError: No se pudo abrir el archivo para guardar.");
+            return;
+        }
+
+        fprintf(f, "%d|%s|%s|%s|%d\n", 
+                (*miCliente).idCliente, 
+                (*miCliente).nombreCompleto, 
+                (*miCliente).direccionCliente, 
+                (*miCliente).telefonoCliente, 
+                (*miCliente).estrato);
     }
 
-    fprintf(f, "%d|%s|%s|%s|%d\n", 
-            miCliente.idCliente, 
-            miCliente.nombreCompleto, 
-            miCliente.direccionCliente, 
-            miCliente.telefonoCliente, 
-            miCliente.estrato);
+    if (miVenta != NULL) {
+        f = fopen("ventas.txt", "a");
+
+        if (f == NULL) {
+            printf("\nError: No se pudo abrir el archivo para guardar.");
+            return;
+        }
+
+        fprintf(f, "%d|%d|%s|%d|%d|%d|%d|%f|%d\n", 
+                (*miVenta).idVenta, 
+                (*miVenta).cliente.idCliente, 
+                (*miVenta).cliente.nombreCompleto,  
+                (*miVenta).cantidadVendida,
+                (*miVenta).fechaVenta.dia,
+                (*miVenta).fechaVenta.mes,
+                (*miVenta).fechaVenta.ano,
+                (*miVenta).valorTotal,
+                (*miVenta).idProducto);
+    }
+
+    if (miProducto != NULL) {
+        f = fopen("productos.txt", "a");
+
+        if (f == NULL) {
+            printf("\nError: No se pudo abrir el archivo para guardar.");
+            return;
+        }
+
+        fprintf(f, "%d|%d|%f|%d|%d|%d|%d\n", 
+                (*miProducto).idProducto, 
+                (*miProducto).valorCompra, 
+                (*miProducto).valorVenta,  
+                (*miProducto).CantidadProducto,
+                (*miProducto).fechaCompra.dia,
+                (*miProducto).fechaCompra.mes,
+                (*miProducto).fechaCompra.ano);
+    }
 
     fclose(f);
 }
+
+//FUNCIONES ARCHIVOS - CLIENTES
 
 void cargarClientes(Cliente vectorClientes[], int *contClientes) {
     FILE *f = fopen("clientes.txt", "r");
@@ -125,6 +169,86 @@ void cargarClientes(Cliente vectorClientes[], int *contClientes) {
 
 //FINAL ARCHIVOS - CLIENTES
 
+//FUNCIONES ARCHIVOS - PRODUCTOS
+
+void cargarProductos(Producto vectorProductos[], int *contProductos) {
+    FILE *f = fopen("productos.txt", "r");
+
+    if (f == NULL) {
+        printf("\n[Sistema] Archivo clientes.txt no encontrado. Creando nuevo...\n");
+        return; // No hay archivo, el contador queda en 0
+    }
+
+    int i = 0;
+    
+    // Leer el archivo hasta que se alcance el final (EOF)
+    while (!feof(f) && i < 100) {
+        Producto tempProducto;
+        
+        // El *[^|] lee cualquier cosa hasta encontrar el siguiente separador |
+        int itemsLeidos = fscanf(f, "%d|%d|%f|%d|%d|%d|%d\n", 
+                                 &tempProducto.idProducto, 
+                                 &tempProducto.valorCompra, 
+                                 &tempProducto.valorVenta, 
+                                 &tempProducto.CantidadProducto, 
+                                 &tempProducto.fechaCompra.dia,
+                                 &tempProducto.fechaCompra.dia,
+                                 &tempProducto.fechaCompra.ano);
+
+        if (itemsLeidos == 7) {
+            // Si se leyeron los 7 items correctamente, lo agregamos al vector
+            vectorProductos[i] = tempProducto;
+            i++;
+        }
+    }
+
+    *contProductos = i; // Actualizamos el contador con el numero de productos leidos
+    fclose(f);
+}
+
+//FINAL ARCHIVOS - PRODUCTOS
+
+//FUNCIONES ARCHIVOS - VENTAS
+
+void cargarVentas(Venta vectorVentas[], int *contVentas) {
+    FILE *f = fopen("ventas.txt", "r");
+
+    if (f == NULL) {
+        printf("\n[Sistema] Archivo clientes.txt no encontrado. Creando nuevo...\n");
+        return; // No hay archivo, el contador queda en 0
+    }
+
+    int i = 0;
+    
+    // Leer el archivo hasta que se alcance el final (EOF)
+    while (!feof(f) && i < 100) {
+        Venta tempVenta;
+        
+        // El *[^|] lee cualquier cosa hasta encontrar el siguiente separador |
+        int itemsLeidos = fscanf(f, "%d|%d|%49[^|]|%d|%d|%d|%d|%f|%d\n", 
+                                 &tempVenta.idVenta, 
+                                 &tempVenta.cliente.idCliente, 
+                                 tempVenta.cliente.nombreCompleto,  
+                                 &tempVenta.cantidadVendida,
+                                 &tempVenta.fechaVenta.dia,
+                                 &tempVenta.fechaVenta.mes,
+                                 &tempVenta.fechaVenta.ano,
+                                 &tempVenta.valorTotal,
+                                 &tempVenta.idProducto);
+
+        if (itemsLeidos == 9) {
+            // Si se leyeron los 9 items correctamente, lo agregamos al vector
+            vectorVentas[i] = tempVenta;
+            i++;
+        }
+    }
+
+    *contVentas = i; // Actualizamos el contador con el numero de ventas leidas
+    fclose(f);
+}
+
+//FINAL ARCHIVOS - VENTAS
+
 // Funciones Cliente
 
 Cliente crearCliente(){
@@ -144,7 +268,7 @@ Cliente crearCliente(){
     printf("\nEstrato: ");
     scanf("%d", &miCliente.estrato);
     
-    guardarCliente(miCliente);
+    GUARDARARCHIVO(&miCliente, NULL, NULL);
     printf("\n\nCliente creado exitosamente y GUARDADO en archivo. \n\n");
 
     printf("\nDigite 0 para continuar...");
@@ -369,6 +493,7 @@ Producto ingresarProducto(){
     int pausa;
     scanf("%d", &pausa);  
     LIMPIARPANTALLA;
+    GUARDARARCHIVO(NULL, NULL, &elProducto);
     return elProducto;
     
 }
@@ -723,6 +848,7 @@ Venta crearVenta(int *generadorID_Venta, int *contVentas, int contClientes, Clie
     (*contVentas)++;
     (*generadorID_Venta)++;
     miVenta.idVenta = (*generadorID_Venta);
+    GUARDARARCHIVO(NULL, &miVenta, NULL);
     return miVenta;
 }
 
@@ -1580,6 +1706,8 @@ void main(){
     Producto vectorProductos[tamanoProductos];
     Venta vectorVentas[tamanoVentas];
     cargarClientes(vectorClientes, &contClientes);
+    cargarVentas(vectorVentas, &contVentas);
+    cargarProductos(vectorProductos, &contProductos);
     int opcion = 1;
     while(opcion!=0){
         LIMPIARPANTALLA;
