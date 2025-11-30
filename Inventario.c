@@ -192,7 +192,7 @@ void cargarProductos(Producto vectorProductos[], int *contProductos) {
                                  &tempProducto.valorVenta, 
                                  &tempProducto.CantidadProducto, 
                                  &tempProducto.fechaCompra.dia,
-                                 &tempProducto.fechaCompra.dia,
+                                 &tempProducto.fechaCompra.mes,
                                  &tempProducto.fechaCompra.ano);
 
         if (itemsLeidos == 7) {
