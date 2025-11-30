@@ -379,13 +379,18 @@ Producto ingresarProducto(){
     printf("\nTipo de producto: ");
     printf("\n1. Equipos. ");
     printf("\n2. Insumos. ");
-    printf("\n\n----------------------------------------");
+	printf("\n\n0. Atras. ");
+    printf("\n\n------------------------------------");
     printf("\nIngrese la opcion: ");
     scanf("%d", &elProducto.tipoProducto);
     LIMPIARPANTALLA;
     printf("\nNombre del Producto: ");
    
     switch(elProducto.tipoProducto){
+		 case 0:
+        return elProducto;
+        LIMPIARPANTALLA
+        break;
         case 1:
         printf("\n1. Router. ");
         printf("\n2. Antena. ");
@@ -665,6 +670,7 @@ Producto actualizarProducto(Producto elProducto){
                 }
 
                 LIMPIARPANTALLA;
+				GUARDARARCHIVO(NULL, NULL, &elProducto);
                 printf("\nProducto Actualizado.\n");
                 int pausa;
                 printf("\nDigite 0 para continuar...");
@@ -675,6 +681,7 @@ Producto actualizarProducto(Producto elProducto){
                 printf("\nActualice Cantidad: ");
                 scanf("%d",&elProducto.CantidadProducto);
                 LIMPIARPANTALLA;
+				GUARDARARCHIVO(NULL, NULL, &elProducto);
                 printf("\nCantidad Actualizada.\n");
                 pausa;
                 printf("\nDigite 0 para continuar...");
@@ -682,14 +689,22 @@ Producto actualizarProducto(Producto elProducto){
                 break;
             
             case 3:
-                printf("\nActualice Fecha de Compra: ");
-                //scanf(elProducto.fechaCompra, 15, stdin);
+				printf("\nActualice Fecha de Compra: ");
+                printf("Fecha de Compra (DD/MM/AAAA):\n");
+                printf("Dia:");
+                scanf("%d", &elProducto.fechaCompra.dia);
+                printf("Mes:");
+                scanf("%d", &elProducto.fechaCompra.mes);
+                printf("Ano:");
+                scanf("%d", &elProducto.fechaCompra.ano);
                 LIMPIARPANTALLA;
-                printf("\nTelefono Actualizado.\n");
+                GUARDARARCHIVO(NULL, NULL, &elProducto);
+				printf("\n\nFecha Actualizada y Guardado en archivo exitosamente. \n\n");
                 pausa;
                 printf("\nDigite 0 para continuar...");
                 scanf("%d", &pausa);
                 break;
+                
             
         }
     }
@@ -701,6 +716,12 @@ void eliminarProductos(int *contProductos, Producto vectorProductos[], int posic
     for(int i = posicion; i<(*contProductos)-1; i++) {
 		vectorProductos[i] = vectorProductos[i+1];
 	}
+
+	printf("\nProducto eliminado correctamente. \n\n");
+    int pausa;
+    printf("\nDigite 0 para continuar...");
+    scanf("%d", &pausa);
+    LIMPIARPANTALLA;
     (*contProductos)--;
     printf("Producto Eliminado.");
 }
@@ -1134,53 +1155,150 @@ void eliminarVenta(int *contVentas, Venta vectorVentas[], int posicion){
 
 // Funcion Especial
 void informeInventario( int contProductos,Producto vectorProductos[]){
-int controuters=0;
-int contestabilizador=0;
-int contantenas=0;
-int contutp=0;
-int contrj45=0;
-int contgrapas=0;
-int contamarras=0;
+    int controuters=0;
+    int contestabilizador=0;
+    int contantenas=0;
+    int contutp=0;
+    int contrj45=0;
+    int contgrapas=0;
+    int contamarras=0;
 
+    int valorrouters=0;
+    int valorestabilizador=0;
+    int valorantenas=0;
+    int valorutp=0;
+    int valorrj45=0;
+    int valorgrapas=0;
+    int valoramarras=0;
+
+    float porcentualInsumos=0;
+    float porcentualEquipos=0;
+    float valorInsumos=0;
+    float valorEquipos=0;
+    float ValorToal=0;
+    
     if((contProductos)==0){
         printf("\nNingun producto ha sido registrado.\n\n");
         }
     for(int i = 0; i < contProductos; i++){
         switch(vectorProductos[i].idProducto){
             case 1101:
-            controuters=controuters+vectorProductos[i].CantidadProducto;
+            controuters=controuters+vectorProductos[i].cantidadProducto;
+            valorrouters=controuters*vectorProductos[i].valorCompra;
             break;
             case 1201:
-            contantenas=contantenas+vectorProductos[i].CantidadProducto;
+            contantenas=contantenas+vectorProductos[i].cantidadProducto;
+            valorantenas=contantenas*vectorProductos[i].valorCompra;
             break;
             case 1301:
-            contestabilizador=contestabilizador+vectorProductos[i].CantidadProducto;
+            contestabilizador=contestabilizador+vectorProductos[i].cantidadProducto;
+            valorestabilizador=contestabilizador*vectorProductos[i].valorCompra;
             break;
             case 2101:
-            contutp=contutp+vectorProductos[i].CantidadProducto;
+            contutp=contutp+vectorProductos[i].cantidadProducto;
+            valorutp=contutp*vectorProductos[i].valorCompra;
             break;
             case 2201:
-            contrj45=contrj45+vectorProductos[i].CantidadProducto;
+            contrj45=contrj45+vectorProductos[i].cantidadProducto;
+            valorrj45=contrj45*vectorProductos[i].valorCompra;
             break;
             case 2301:
-            contgrapas=contgrapas+vectorProductos[i].CantidadProducto;
+            contgrapas=contgrapas+vectorProductos[i].cantidadProducto;
+            valorgrapas=contgrapas*vectorProductos[i].valorCompra;
             break;
             case 2401:
-            contamarras=contamarras+vectorProductos[i].CantidadProducto;
+            contamarras=contamarras+vectorProductos[i].cantidadProducto;
+            valoramarras=contamarras*vectorProductos[i].valorCompra;
             break;
         }
        
     }
-    printf ("%d \n",controuters);
-    printf ("%d \n",contestabilizador);
-    printf ("%d \n",contantenas);
-    printf ("%d \n",contutp);
-    printf ("%d \n",contrj45);
-    printf ("%d \n",contgrapas);
-    printf ("%d \n",contamarras);
+
+    //Porcentual de cada tipo de producto
+    
+    valorInsumos = valorutp+valorrj45+valorgrapas+valoramarras;
+    valorEquipos = valorestabilizador+valorantenas+valorrouters;
+    ValorToal = valorInsumos+valorEquipos;
+    porcentualInsumos =(valorInsumos/ValorToal)*100;
+    porcentualEquipos =(valorEquipos/ValorToal)*100;
+   
+    // DATOS PARA EL GRÁFICO
+
+    // Encontrar el valor máximo en los datos, necesario para la altura del gráfico
+
+    int datos[] = {valorrouters/100000, valorantenas/100000, valorestabilizador/100000,valorutp/100000, valorrj45/100000, valorgrapas/100000, valoramarras/100000};
+    int num_barras = sizeof(datos) / sizeof(datos[0]);
+    int max = datos[0];
+    for (int i = 1; i < num_barras; i++) {
+        if (datos[i] > max) {
+            max = datos[i];
+        }
+    }
+       
+    printf("+------------------------------------------------------------------------------+\n");
+    printf("|                            INFORME DE INVENTARIO                             |\n");
+    printf("+-------------------------+-------------------------+--------------------------+\n");
+    printf("|       Producto          |          Cantidad       |           Valor          |\n");
+    printf("+-------------------------+-------------------------+--------------------------+\n");
+    printf("|        Routers          |            %3d          |        %7d           |\n",controuters, valorrouters);
+    printf("|     Estabilizador       |            %3d          |        %7d           |\n",contestabilizador, valorestabilizador);
+    printf("|        Antenas          |            %3d          |        %7d           |\n",contantenas,valorantenas);
+    printf("|       Cable UTP         |            %3d          |        %7d           |\n",contutp,valorutp);
+    printf("|     Conector RJ45       |            %3d          |        %7d           |\n",contrj45,valorrj45);
+    printf("|        Grapas           |            %3d          |        %7d           |\n",contgrapas,valorgrapas);
+    printf("|        Amarras          |            %3d          |        %7d           |\n",contamarras,valoramarras);
+    printf("+-------------------------+-------------------------+--------------------------+\n");
+    printf("|                         TOTAL                     |       %8.0f           |\n",ValorToal);
+    printf("+---------------------------------------------------+--------------------------+\n");
+    printf("|                              Insumos Vs Equipos                              |\n");
+    printf("+-------------------------+-------------------------+--------------------------+\n");
+    printf("|     Total Insumos       |           %7.0f       |           %2.2f%%         |\n",valorInsumos,porcentualInsumos);
+    printf("|     Total Equipos       |           %7.0f       |           %2.2f%%         |\n",valorEquipos,porcentualEquipos);
+    printf("+-------------------------+-------------------------+--------------------------+\n");
+    printf("|                    Grafico de Activos (En en pesos 100K)                     |\n");
+    printf("+------------------------------------------------------------------------------+\n");
+
+    // Bucle exterior: Itera desde la altura máxima hacia abajo (de arriba a abajo)
+    for (int nivel_actual = max; nivel_actual > 0; nivel_actual--) {
+        // Opcional: Imprime el número del nivel/eje Y
+        printf("|          %2d | ", nivel_actual);
+
+        // Bucle interior: Itera sobre cada barra en la fila actual
+        for (int i = 0; i < num_barras; i++) {
+            // Si el valor de la barra es igual o mayor que el nivel actual, imprime un caracter
+            if (datos[i] >= nivel_actual) {
+                printf(" |XX| ");
+            } else {
+                // Si no, imprime espacios vacíos para esa posición
+                printf("      ");
+            }
+        }
+        printf("                     |\n"); // Salto de línea para pasar al siguiente nivel inferior
+    }
+
+    // Opcional: Imprime el eje X y etiquetas en la parte inferior
+        printf("|          ---+");
+    for (int i = 0; i < num_barras; i++) {
+        printf("------");
+    }
+    printf("                      |\n|             |");
+    for (int i = 0; i < num_barras; i++) {
+        // Imprime etiquetas simples (A, B, C...) o índices (1, 2, 3...)
+        printf(" %3c  ", 'A' + i);
+    }
+    printf("                      |\n");
+    printf("+------------------------------------------------------------------------------+\n");
+    printf("|          A = Routers                     E = Conector RJ45                   |\n");
+    printf("|          B = Antenas                     F = Grapas                          |\n");
+    printf("|          C = Estabilizador               G = Amarras                         |\n");
+    printf("|          D = Cable UTP                                                       |\n");
+    printf("+------------------------------------------------------------------------------+\n");
     
 }
 
+void actualizarPrecios(){
+
+}
 //FINAL FUNCION ESPECIAL
 
 //FUNCION RECURSIVA - INGRESO TOTAL
@@ -1203,9 +1321,9 @@ void menuGestionarProductos(){
     printf("\n2. Mostrar Productos. ");
     printf("\n3. Actualizar Productos. ");
     printf("\n4. Eliminar Productos. ");
-    
+    printf("\n5. Informe Inventario. ");
     printf("\n\n0. Atras");
-    printf("\n\n----------------------------------------");
+    printf("\n\n-----------------------------------");
     printf("\nIngrese la opcion: ");
 }
 
@@ -1363,8 +1481,6 @@ void submenuCrearProductos(Producto vectorProductos[], int *contProductos){
     (*contProductos)++;
 }
 
-
-
 void submenuMostrarProductos(int *contProductos, Producto vectorProductos[]){
     LIMPIARPANTALLA;
     int pausa;
@@ -1390,44 +1506,64 @@ int submenuActualizarProductos(int *contProductos, Producto vectorProductos[]){
         printf("\nNingun producto ha sido registrado.\n\n");
         return 0;
     }
+	int prod;
     int id;
-    for(int i = 0; i < (*contProductos); i++){
-     
-        switch (vectorProductos[i].idProducto){
-            case 1101:
-            printf("\n%d    Router",vectorProductos[i].idProducto);
-            break;
+	printf("\n--------- Actualizar Producto ---------\n");
+    printf(" ID     Activo\n");
+    printf("_________________\n");
+    printf("1101    Router\n");
+    printf("1201    Antena\n");
+    printf("1301    Estabilizador\n");
+    printf("2101    Cable UTP\n");
+    printf("2201    Conector RJ45\n");
+    printf("2301    Grapas\n");
+    printf("2401    Amarras\n");
+    printf("_________________\n");
+    printf("\n\n Ingrese una opcion. ");
+    scanf("%d", &prod);
+    LIMPIARPANTALLA
 
-            case 1201:
-            printf("\n%d    Antena",vectorProductos[i].idProducto);
-            break;
+    printf("\n\nEnumerador  ID      Producto        Fecha\n");
+    printf("_____________________________________________\n");
+	for(int i = 0; i < (*contProductos); i++){
+        if(vectorProductos[i].idProducto==prod){
+            
+            switch (vectorProductos[i].idProducto){
+                case 1101:
+                printf("\n    %2d.    %d    Router          %2d/%2d/%d", i+1, vectorProductos[i].idProducto, vectorProductos[i].fechaCompra.dia,vectorProductos[i].fechaCompra.mes,vectorProductos[i].fechaCompra.ano);
+                break;
 
-            case 1301:
-            printf("\n%d    Estabilizador",vectorProductos[i].idProducto);
-            break;
+                case 1201:
+                printf("\n    %2d.    %d    Antena          %2d/%2d/%d", i+1, vectorProductos[i].idProducto, vectorProductos[i].fechaCompra.dia,vectorProductos[i].fechaCompra.mes,vectorProductos[i].fechaCompra.ano);
+                break;
 
-            case 2101:
-            printf("\n%d    Cable UTP",vectorProductos[i].idProducto);
-            break;
+                case 1301:
+                printf("\n    %2d.    %d    Estabilizador   %2d/%2d/%d", i+1, vectorProductos[i].idProducto, vectorProductos[i].fechaCompra.dia,vectorProductos[i].fechaCompra.mes,vectorProductos[i].fechaCompra.ano);
+                break;
 
-            case 2201:
-            printf("\n%d    Conector RJ45",vectorProductos[i].idProducto);
-            break;
+                case 2101:
+                printf("\n    %2d.    %d    Cable UTP       %2d/%2d/%d", i+1, vectorProductos[i].idProducto, vectorProductos[i].fechaCompra.dia,vectorProductos[i].fechaCompra.mes,vectorProductos[i].fechaCompra.ano);
+                break;
 
-            case 2301:
-            printf("\n%d    Grapas",vectorProductos[i].idProducto);
-            break;
+                case 2201:
+                printf("\n    %2d.    %d    Conector RJ45   %2d/%2d/%d", i+1, vectorProductos[i].idProducto, vectorProductos[i].fechaCompra.dia,vectorProductos[i].fechaCompra.mes,vectorProductos[i].fechaCompra.ano);
+                break;
 
-            case 2401:
-            printf("\n%d    Amarras",vectorProductos[i].idProducto);
-            break;
+                case 2301:
+                printf("\n    %2d.    %d    Grapas          %2d/%2d/%d", i+1, vectorProductos[i].idProducto, vectorProductos[i].fechaCompra.dia,vectorProductos[i].fechaCompra.mes,vectorProductos[i].fechaCompra.ano);
+                break;
+
+                case 2401:
+                printf("\n    %2d.    %d    Amarras         %2d/%2d/%d", i+1, vectorProductos[i].idProducto, vectorProductos[i].fechaCompra.dia,vectorProductos[i].fechaCompra.mes,vectorProductos[i].fechaCompra.ano);
+                break;
+            }
         }
         
     }
-    printf("\n\n----------------------------------------");
-    printf("\nIngrese el ID del producto: ");
-    scanf("%d", &id);
-    LIMPIARPANTALLA;
+     printf("\n_____________________________________________\n");    
+    printf("\nIngrese el enumerador del Producto: ");
+    scanf("%d", &id);	
+	LIMPIARPANTALLA;
     int productoEncontrado = -1; 
     int i;
     for(i=0; i<(*contProductos); i++){
@@ -1455,42 +1591,63 @@ int submenuEliminarProductos(int *contProductos, Producto vectorProductos[]){
         LIMPIARPANTALLA;
         return 0;
     }
-    int id;
+    int prod;
+	int id;
+	int id;
     printf("\n--------- Eliminar Producto ---------\n");
+
+    printf(" ID     Activo\n");
+    printf("_________________\n");
+    printf("1101    Router\n");
+    printf("1201    Antena\n");
+    printf("1301    Estabilizador\n");
+    printf("2101    Cable UTP\n");
+    printf("2201    Conector RJ45\n");
+    printf("2301    Grapas\n");
+    printf("2401    Amarras\n");
+    printf("_________________\n");
+    printf("\n\n Ingrese una opcion. ");
+    scanf("%d", &prod);
+    LIMPIARPANTALLA
+
+    printf("\n\nEnumerador  ID      Producto        Fecha\n");
+    printf("_____________________________________________\n");
     for(int i = 0; i < (*contProductos); i++){
-     
-        switch (vectorProductos[i].idProducto){
-            case 1101:
-            printf("\n%d. %d    Router - Cantidad: %d", i+1, vectorProductos[i].idProducto, vectorProductos[i].CantidadProducto);
-            break;
+        if(vectorProductos[i].idProducto==prod){
+            
+            switch (vectorProductos[i].idProducto){
+                case 1101:
+                printf("\n    %2d.    %d    Router          %2d/%2d/%d", i+1, vectorProductos[i].idProducto, vectorProductos[i].fechaCompra.dia,vectorProductos[i].fechaCompra.mes,vectorProductos[i].fechaCompra.ano);
+                break;
 
-            case 1201:
-            printf("\n%d. %d    Antena", i+1, vectorProductos[i].idProducto, vectorProductos[i].CantidadProducto);
-            break;
+                case 1201:
+                printf("\n    %2d.    %d    Antena          %2d/%2d/%d", i+1, vectorProductos[i].idProducto, vectorProductos[i].fechaCompra.dia,vectorProductos[i].fechaCompra.mes,vectorProductos[i].fechaCompra.ano);
+                break;
 
-            case 1301:
-            printf("\n%d. %d    Estabilizador", i+1, vectorProductos[i].idProducto, vectorProductos[i].CantidadProducto);
-            break;
+                case 1301:
+                printf("\n    %2d.    %d    Estabilizador   %2d/%2d/%d", i+1, vectorProductos[i].idProducto, vectorProductos[i].fechaCompra.dia,vectorProductos[i].fechaCompra.mes,vectorProductos[i].fechaCompra.ano);
+                break;
 
-            case 2101:
-            printf("\n%d. %d    Cable UTP", i+1, vectorProductos[i].idProducto, vectorProductos[i].CantidadProducto);
-            break;
+                case 2101:
+                printf("\n    %2d.    %d    Cable UTP       %2d/%2d/%d", i+1, vectorProductos[i].idProducto, vectorProductos[i].fechaCompra.dia,vectorProductos[i].fechaCompra.mes,vectorProductos[i].fechaCompra.ano);
+                break;
 
-            case 2201:
-            printf("\n%d. %d    Conector RJ45", i+1, vectorProductos[i].idProducto, vectorProductos[i].CantidadProducto);
-            break;
+                case 2201:
+                printf("\n    %2d.    %d    Conector RJ45   %2d/%2d/%d", i+1, vectorProductos[i].idProducto, vectorProductos[i].fechaCompra.dia,vectorProductos[i].fechaCompra.mes,vectorProductos[i].fechaCompra.ano);
+                break;
 
-            case 2301:
-            printf("\n%d. %d    Grapas", i+1, vectorProductos[i].idProducto, vectorProductos[i].CantidadProducto);
-            break;
+                case 2301:
+                printf("\n    %2d.    %d    Grapas          %2d/%2d/%d", i+1, vectorProductos[i].idProducto, vectorProductos[i].fechaCompra.dia,vectorProductos[i].fechaCompra.mes,vectorProductos[i].fechaCompra.ano);
+                break;
 
-            case 2401:
-            printf("\n%d. %d    Amarras", i+1, vectorProductos[i].idProducto, vectorProductos[i].CantidadProducto);
-            break;
+                case 2401:
+                printf("\n    %2d.    %d    Amarras         %2d/%2d/%d", i+1, vectorProductos[i].idProducto, vectorProductos[i].fechaCompra.dia,vectorProductos[i].fechaCompra.mes,vectorProductos[i].fechaCompra.ano);
+                break;
+            }
         }
         
     }
-    printf("\n\n----------------------------------------");
+    printf("\n_____________________________________________\n");    
     printf("\nIngrese el enumerador del Producto: ");
     scanf("%d", &id);
     LIMPIARPANTALLA;
@@ -1507,8 +1664,6 @@ int submenuEliminarProductos(int *contProductos, Producto vectorProductos[]){
         LIMPIARPANTALLA;
         eliminarProductos(contProductos, vectorProductos, posicion);
         printf("\nProducto eliminado correctamente. \n\n");
-        printf("\nDigite 0 para continuar...");
-        scanf("%d", &pausa);
         LIMPIARPANTALLA;
     }
     LIMPIARPANTALLA;
@@ -1649,6 +1804,9 @@ void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProduct
                             break;
                         case opcionMostrarProductos:
                             submenuMostrarProductos(contProductos, vectorProductos);
+							int pausa;
+                            printf("\nDigite 0 para continuar...");
+                            scanf("%d", &pausa);
                             break;
                         case opcionActualizarProductos:
                             submenuActualizarProductos(contProductos, vectorProductos);
@@ -1658,6 +1816,8 @@ void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProduct
                             break;
                         case opcionInformeInventario:
                             informeInventario(*contProductos, vectorProductos);
+							printf("\nDigite 0 para continuar...");
+                            scanf("%d", &pausa);
                             break;
                     }
                 }
@@ -1715,7 +1875,3 @@ void main(){
     }
 }
 
-// Recuerde Ingresar las funciones para guardar y actualizar archivo
-// Recuerde la Funcion de Recursividad
-// si le queda tiempo revisar lo de las fechas 
-// toca vereificar las pausas en producto (yo me encargo) porque como me quedo a mi en el "mostrar", no me gusto 
