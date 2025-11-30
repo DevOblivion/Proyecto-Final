@@ -1461,60 +1461,57 @@ int submenuEliminarProductos(int *contProductos, Producto vectorProductos[]){
      
         switch (vectorProductos[i].idProducto){
             case 1101:
-            printf("\n%d    Router",vectorProductos[i].idProducto);
+            printf("\n%d. %d    Router - Cantidad: %d", i+1, vectorProductos[i].idProducto, vectorProductos[i].CantidadProducto);
             break;
 
             case 1201:
-            printf("\n%d    Antena",vectorProductos[i].idProducto);
+            printf("\n%d. %d    Antena", i+1, vectorProductos[i].idProducto, vectorProductos[i].CantidadProducto);
             break;
 
             case 1301:
-            printf("\n%d    Estabilizador",vectorProductos[i].idProducto);
+            printf("\n%d. %d    Estabilizador", i+1, vectorProductos[i].idProducto, vectorProductos[i].CantidadProducto);
             break;
 
             case 2101:
-            printf("\n%d    Cable UTP",vectorProductos[i].idProducto);
+            printf("\n%d. %d    Cable UTP", i+1, vectorProductos[i].idProducto, vectorProductos[i].CantidadProducto);
             break;
 
             case 2201:
-            printf("\n%d    Conector RJ45",vectorProductos[i].idProducto);
+            printf("\n%d. %d    Conector RJ45", i+1, vectorProductos[i].idProducto, vectorProductos[i].CantidadProducto);
             break;
 
             case 2301:
-            printf("\n%d    Grapas",vectorProductos[i].idProducto);
+            printf("\n%d. %d    Grapas", i+1, vectorProductos[i].idProducto, vectorProductos[i].CantidadProducto);
             break;
 
             case 2401:
-            printf("\n%d    Amarras",vectorProductos[i].idProducto);
+            printf("\n%d. %d    Amarras", i+1, vectorProductos[i].idProducto, vectorProductos[i].CantidadProducto);
             break;
         }
         
     }
     printf("\n\n----------------------------------------");
-    printf("\nIngrese el ID del Producto: ");
+    printf("\nIngrese el enumerador del Producto: ");
     scanf("%d", &id);
     LIMPIARPANTALLA;
     int productoEncontrado = -1;
     int i;
     int posicion;
-    for(i=0; i<(*contProductos); i++){
-        if(vectorProductos[i].idProducto == id){
-            productoEncontrado = 1;
-            posicion = i;
-            printf("Producto encontrado.\n");
-            int pausa;
-            printf("\nDigite 0 para confirmar la eliminacion del producto...");
-            scanf("%d", &pausa);
-            LIMPIARPANTALLA;
-            eliminarProductos(contProductos, vectorProductos, posicion);
-            printf("\nProducto eliminado correctamente. \n\n");
-            printf("\nDigite 0 para continuar...");
-            scanf("%d", &pausa);
-            LIMPIARPANTALLA;
-            break;
-        }
+    if(id<=(*contProductos)){
+        productoEncontrado = 1;
+        posicion = id-1;
+        printf("Producto encontrado.\n");
+        int pausa;
+        printf("\nDigite 0 para confirmar la eliminacion del producto...");
+        scanf("%d", &pausa);
+        LIMPIARPANTALLA;
+        eliminarProductos(contProductos, vectorProductos, posicion);
+        printf("\nProducto eliminado correctamente. \n\n");
+        printf("\nDigite 0 para continuar...");
+        scanf("%d", &pausa);
         LIMPIARPANTALLA;
     }
+    LIMPIARPANTALLA;
     if(productoEncontrado == -1){
         printf("\nProducto no encontrado.\n");
         int pausa;
