@@ -2,11 +2,11 @@
 |Cuba
 |3135713205
 |1
-1012458790|Laura Marcela Pérez Gómez
+1012458790|Laura Marcela Perez Gomez
 |Manizales
 |3184579021
 |2
-1025693401|Carlos Andrés Ramírez Loaiza
+1025693401|Carlos Andres Ramirez Loaiza
 |Armenia
 |3148923075
 |3
@@ -14,35 +14,35 @@
 |Pereira
 |3196745802
 |4
-1039874521|Juan Sebastián Montoya Quintero
+1039874521|Juan Sebastian Montoya Quintero
 |Dosquebradas
 |3115498723
 |5
-1045637829|María Alejandra Castaño López
+1045637829|Maria Alejandra Castano Lopez
 |Cali
 |3157829034
 |6
-1054329876|Felipe Andrés Salazar Grisales
-|Medellín
+1054329876|Felipe Andres Salazar Grisales
+|Medellin
 |3126745890
 |7
-1098765432|Camila Juliana Valencia Ríos
-|Bogotá
+1098765432|Camila Juliana Valencia Rios
+|Bogota
 |3204587932
 |8
-1002345678|Julián Esteban Ramírez Hoyos
+1002345678|Julian Esteban Ramirez Hoyos
 |Barranquilla
 |3009874512
 |9
-1087654321|Valentina Sofía Rincón Torres
-|Ibagué
+1087654321|Valentina Sofia Rincon Torres
+|Ibague
 |3174598023
 |10
-1023489765|José Miguel García Ramírez
+1023489765|Jose Miguel Garcia Ramirez
 |Cartagena
 |3117802345
 |11
-1034587629|Sara Daniela Quintero Marín
+1034587629|Sara Daniela Quintero Marin
 |Bucaramanga
 |3129074568
 |12
@@ -50,19 +50,19 @@
 |Santa Marta
 |3164578920
 |13
-1078945623|Paula Andrea Arango Vélez
+1078945623|Paula Andrea Arango Velez
 |Pasto
 |3194576801
 |14
-1089456712|Nicolás David Ospina Gómez
-|Montería
+1089456712|Nicolas David Ospina Gomez
+|Monteria
 |3147658920
 |15
-1009876543|Isabella María Zapata Mejía
+1009876543|Isabella Maria Zapata Mejia
 |Neiva
 |3007845123
 |16
-1016782345|Juan Pablo Aristizábal Cifuentes
+1016782345|Juan Pablo Aristizabal Cifuentes
 |Manizales
 |3176458921
 |17
@@ -70,23 +70,23 @@
 |Palmira
 |3124675890
 |18
-1072348965|Samuel Andrés Villegas Londoño
+1072348965|Samuel Andres Villegas Londono
 |Villavicencio
 |3189045721
 |19
-1092345671|Sofía Natalia Muñoz Herrera
-|Tuluá
+1092345671|Sofia Natalia Munoz Herrera
+|Tulua
 |3159076432
 |20
-1008765432|Tomás Camilo Giraldo López
+1008765432|Tomas Camilo Giraldo Lopez
 |Pereira
 |3117659034
 |21
-1012349876|Karen Juliana Vargas Ríos
+1012349876|Karen Juliana Vargas Rios
 |Cartago
 |3164598702
 |22
-1029873456|Andrés Felipe Serna Morales
+1029873456|Andres Felipe Serna Morales
 |Cali
 |3009756432
 |23
@@ -94,11 +94,11 @@
 |Bello
 |3187459032
 |24
-1056712398|Miguel Ángel Castañeda Pérez
+1056712398|Miguel Angel Castaneda Perez
 |Envigado
 |3119087456
 |25
-1069823412|Manuela Carolina Lemos Ramírez
+1069823412|Manuela Carolina Lemos Ramirez
 |Armenia
 |3145782390
 |26
@@ -107,18 +107,22 @@
 |3198045231
 |27
 1094567231|Tatiana Marcela Hoyos Valencia
-|Bogotá
+|Bogota
 |3126754980
 |28
-1105678923|Esteban Nicolás Marulanda López
-|Medellín
+1105678923|Esteban Nicolas Marulanda Lopez
+|Medellin
 |3008657342
 |29
-1112345678|Mariana Alejandra Cifuentes Ríos
+1112345678|Mariana Alejandra Cifuentes Rios
 |Cali
 |3178045692
 |30
-1123456789|Camilo José Orozco Restrepo
+1123456789|Camilo Jose Orozco Restrepo
 |Dosquebradas
 |3157846203
 |31
+1088008718|Julian Rojas
+|Irazu
+|3105045350
+|4
