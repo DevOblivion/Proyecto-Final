@@ -1528,8 +1528,8 @@ void submenuCrearVenta(Venta vectorVentas[], int *contVentas, int contClientes, 
     LIMPIARPANTALLA;
     static int generadorID_Venta_local = 0;
     Venta miVenta = crearVenta(&generadorID_Venta_local, contVentas, contClientes, vectorClientes, contProductos, vectorProductos);
-    if (*contVentas > 0) {
-        vectorVentas[(*contVentas) - 1] = miVenta;
+    if (*contVentas > 0 && miVenta.idVenta != 0) {
+        vectorVentas[(*contVentas) - 1] = miVenta;     
     }
     LIMPIARPANTALLA;
 }
