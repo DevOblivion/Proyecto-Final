@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #define LIMPIARPANTALLA system("cls"); //cls 
-#define MOSTRAREMPRESA printf("\nAAA Conections");
+#define MOSTRAREMPRESA printf("\nAAA Connections");
 #define SALTARLINEA printf("\n"); 
 #define GUARDARARCHIVO(cliente, venta, producto) guardarArchivo(cliente, venta, producto);//Macro para guardar archivos
 
@@ -210,7 +210,7 @@ void cargarProductos(Producto vectorProductos[], int *contProductos) {
 
 //FUNCIONES ARCHIVOS - VENTAS
 
-void cargarVentas(Venta vectorVentas[], int *contVentas) {
+void cargarVentas(Venta vectorVentas[], int *contVentas, int *generadorID_venta) {
     FILE *f = fopen("ventas.txt", "r");
 
     if (f == NULL) {
@@ -244,6 +244,16 @@ void cargarVentas(Venta vectorVentas[], int *contVentas) {
     }
 
     *contVentas = i; // Actualizamos el contador con el numero de ventas leidas
+
+    int mayor = 0;
+    for(int i = 0; i<(*contVentas); i++){ // Ciclo para encontrar el ID mas alto de las ventas
+        if(vectorVentas[i].idVenta >= mayor){
+            mayor = vectorVentas[i].idVenta;
+        }
+    }
+
+    (*generadorID_venta) = mayor + 1; // Asignarle el valor inicial al generador de IDs de venta
+
     fclose(f);
 }
 
@@ -352,7 +362,7 @@ void eliminarClientes(int *contClientes, Cliente vectorClientes[], int posicion)
     for(int i = posicion; i<(*contClientes)-1; i++){
         vectorClientes[i] = vectorClientes[i+1];
     }
-    printf("\nCliente eliminado correctamente. \n\n");
+    printf("\nCliente eliminado exitosamente. \n\n");
     int pausa;
     printf("\nDigite 0 para continuar...");
     scanf("%d", &pausa);
@@ -716,17 +726,82 @@ void eliminarProductos(int *contProductos, Producto vectorProductos[], int posic
     for(int i = posicion; i<(*contProductos)-1; i++) {
 		vectorProductos[i] = vectorProductos[i+1];
 	}
-
-	printf("\nProducto eliminado correctamente. \n\n");
-    int pausa;
-    printf("\nDigite 0 para continuar...");
-    scanf("%d", &pausa);
-    LIMPIARPANTALLA;
     (*contProductos)--;
-    printf("Producto Eliminado.");
 }
 
 // Funciones Venta
+
+//FUNCIONES VENTAS - STOCK
+
+// Funcion de ayuda para obtener el total de productos
+int stockTotalProducto(int contProductos, Producto vectorProductos[], int idProducto){
+    int total = 0;
+    for(int i = 0; i < contProductos; i++){
+        if(vectorProductos[i].idProducto == idProducto) total += vectorProductos[i].cantidadProducto;
+    }
+    return total;
+}
+
+// Funcion de ayuda para volver a hacer restock, 
+void restockProducto(int *contProductos, Producto vectorProductos[], int idProducto, int cantidad){
+    for(int i = 0; i < (*contProductos); i++){
+        if(vectorProductos[i].idProducto == idProducto){
+            vectorProductos[i].cantidadProducto += cantidad;
+            return;
+        }
+    }
+    // si no existe, crear un producto (Por si lo que el cliente compro eran las ultimas unidades, 
+    //ya no habria un producto con ese ID, por ello lo crea en el vectorProductos)
+    Producto p;
+    p.idProducto = idProducto;
+    p.tipoProducto = 0;
+    p.nombreProducto = 0;
+    p.cantidadProducto = cantidad;
+    p.CantidadVendida = 0;
+    p.fechaCompra.dia = p.fechaCompra.mes = p.fechaCompra.ano = 0;
+    switch(idProducto){
+        case 1101: p.valorCompra = 38000; break;
+        case 1201: p.valorCompra = 145000; break;
+        case 1301: p.valorCompra = 25000; break;
+        case 2101: p.valorCompra = 3500; break;
+        case 2201: p.valorCompra = 1200; break;
+        case 2301: p.valorCompra = 2900; break;
+        case 2401: p.valorCompra = 4500; break;
+        default: p.valorCompra = 0; break;
+    }
+    p.valorVenta = p.valorCompra * 1.3f;
+    vectorProductos[*contProductos] = p;
+    (*contProductos)++;
+}
+
+// Funcion de ayuda para descontar stock de un producto
+int descontarStock(int *contProductos, Producto vectorProductos[], int idProducto, int cantidad){
+    int total = stockTotalProducto(*contProductos, vectorProductos, idProducto);
+    if(cantidad > total) return 0;
+    int restante = cantidad;
+    for(int i = 0; i < (*contProductos) && restante > 0; i++){
+        if(vectorProductos[i].idProducto != idProducto) continue;
+        int disponible = vectorProductos[i].cantidadProducto;
+        if(disponible <= 0) continue;
+        if(disponible <= restante){
+            restante -= disponible;
+            vectorProductos[i].cantidadProducto = 0;
+        } else {
+            vectorProductos[i].cantidadProducto -= restante;
+            restante = 0;
+        }
+    }
+    // eliminar productos que no tienen cantidad
+    for(int i = 0; i < (*contProductos); i++){
+        if(vectorProductos[i].cantidadProducto <= 0){
+            eliminarProductos(contProductos, vectorProductos, i);
+            i--;
+        }
+    }
+    return 1;
+}
+
+//FINAL FUNCIONES VENTA - STOCK
 
 Venta crearVenta(int *generadorID_Venta, int *contVentas, int contClientes, Cliente vectorClientes[], int *contProductos, Producto vectorProductos[]){
     Venta miVenta = {0};
@@ -769,21 +844,17 @@ Venta crearVenta(int *generadorID_Venta, int *contVentas, int contClientes, Clie
         return miVenta;
     }
     
-    printf("\n--- Productos Disponibles ---\n");
-    for(int i = 0; i < (*contProductos); i++){
-        char nombre[20];
-        switch(vectorProductos[i].idProducto){
-            case 1101: strcpy(nombre,"Router"); break;
-            case 1201: strcpy(nombre,"Antena"); break;
-            case 1301: strcpy(nombre,"Estabilizador"); break;
-            case 2101: strcpy(nombre,"Cable UTP"); break;
-            case 2201: strcpy(nombre,"Conector RJ45"); break;
-            case 2301: strcpy(nombre,"Grapas"); break;
-            case 2401: strcpy(nombre,"Amarras"); break;
-            default: strcpy(nombre,"Otro"); break;
-        }
-        printf("%d. %s (ID: %d) - Cantidad: %d\n", i+1, nombre, vectorProductos[i].idProducto, vectorProductos[i].cantidadProducto);
-    }
+    printf("\n--- Productos Disponibles ---\n\n");
+    printf(" ID     Nombre                  Cantidad\n");
+    printf("__________________________________________\n");
+    printf("1101    Router                   %3d\n", stockTotalProducto(*contProductos, vectorProductos, 1101));
+    printf("1201    Antena                   %3d\n", stockTotalProducto(*contProductos, vectorProductos, 1201));
+    printf("1301    Estabilizador            %3d\n", stockTotalProducto(*contProductos, vectorProductos, 1301));
+    printf("2101    Cable UTP                %3d\n", stockTotalProducto(*contProductos, vectorProductos, 2101));
+    printf("2201    Conector RJ45            %3d\n", stockTotalProducto(*contProductos, vectorProductos, 2201));
+    printf("2301    Grapas                   %3d\n", stockTotalProducto(*contProductos, vectorProductos, 2301));
+    printf("2401    Amarras                  %3d\n", stockTotalProducto(*contProductos, vectorProductos, 2401));
+    printf("__________________________________________\n");
     
     printf("\nSeleccione el ID del producto: ");
     scanf("%d", &miVenta.idProducto);
@@ -867,8 +938,8 @@ Venta crearVenta(int *generadorID_Venta, int *contVentas, int contClientes, Clie
     LIMPIARPANTALLA;
     
     (*contVentas)++;
-    (*generadorID_Venta)++;
     miVenta.idVenta = (*generadorID_Venta);
+    (*generadorID_Venta)++;
     GUARDARARCHIVO(NULL, &miVenta, NULL);
     return miVenta;
 }
@@ -896,80 +967,6 @@ void mostrarVentas(Venta miVenta, int i, Producto vectorProducto[]){
         printf("\nFecha: %d-%d-%d", miVenta.fechaVenta.dia, miVenta.fechaVenta.mes, miVenta.fechaVenta.ano);
         printf("\nValor total: %.2f\n\n", miVenta.valorTotal);
 }
-
-
-
-//FUNCIONES VENTAS - STOCK
-
-// Funcion de ayuda para obtener el total de productos
-int totalStockProducto(int contProductos, Producto vectorProductos[], int idProducto){
-    int total = 0;
-    for(int i = 0; i < contProductos; i++){
-        if(vectorProductos[i].idProducto == idProducto) total += vectorProductos[i].cantidadProducto;
-    }
-    return total;
-}
-
-// Funcion de ayuda para volver a hacer restock, 
-void restockProduct(int *contProductos, Producto vectorProductos[], int idProducto, int cantidad){
-    for(int i = 0; i < (*contProductos); i++){
-        if(vectorProductos[i].idProducto == idProducto){
-            vectorProductos[i].cantidadProducto += cantidad;
-            return;
-        }
-    }
-    // si no existe, crear un producto (Por si lo que el cliente compro eran las ultimas unidades, 
-    //ya no habria un producto con ese ID, por ello lo crea en el vectorProductos)
-    Producto p;
-    p.idProducto = idProducto;
-    p.tipoProducto = 0;
-    p.nombreProducto = 0;
-    p.cantidadProducto = cantidad;
-    p.CantidadVendida = 0;
-    p.fechaCompra.dia = p.fechaCompra.mes = p.fechaCompra.ano = 0;
-    switch(idProducto){
-        case 1101: p.valorCompra = 38000; break;
-        case 1201: p.valorCompra = 145000; break;
-        case 1301: p.valorCompra = 25000; break;
-        case 2101: p.valorCompra = 3500; break;
-        case 2201: p.valorCompra = 1200; break;
-        case 2301: p.valorCompra = 2900; break;
-        case 2401: p.valorCompra = 4500; break;
-        default: p.valorCompra = 0; break;
-    }
-    p.valorVenta = p.valorCompra * 1.3f;
-    vectorProductos[*contProductos] = p;
-    (*contProductos)++;
-}
-
-// Funcion de ayuda para descontar stock de un producto
-int deductProductStock(int *contProductos, Producto vectorProductos[], int idProducto, int cantidad){
-    int total = totalStockProducto(*contProductos, vectorProductos, idProducto);
-    if(cantidad > total) return 0;
-    int restante = cantidad;
-    for(int i = 0; i < (*contProductos) && restante > 0; i++){
-        if(vectorProductos[i].idProducto != idProducto) continue;
-        int disponible = vectorProductos[i].cantidadProducto;
-        if(disponible <= 0) continue;
-        if(disponible <= restante){
-            restante -= disponible;
-            vectorProductos[i].cantidadProducto = 0;
-        } else {
-            vectorProductos[i].cantidadProducto -= restante;
-            restante = 0;
-        }
-    }
-    // eliminar productos que no tienen cantidad
-    for(int i = 0; i < (*contProductos); i++){
-        if(vectorProductos[i].cantidadProducto <= 0){
-            eliminarProductos(contProductos, vectorProductos, i);
-            i--;
-        }
-    }
-    return 1;
-}
-
-//FINAL FUNCIONES VENTA - STOCK
 
 int actualizarVenta(Venta vectorVentas[], int *contVentas, int contClientes, Cliente vectorClientes[], int *contProductos, Producto vectorProductos[]){
     LIMPIARPANTALLA;
@@ -1011,9 +1008,9 @@ int actualizarVenta(Venta vectorVentas[], int *contVentas, int contClientes, Cli
         LIMPIARPANTALLA;
         switch(opcion){
             case 0:
+
                 break;
             case 1:{
-                
                 char nombreActual[20];
                 switch(v->idProducto){
                     case 1101: strcpy(nombreActual, "Router"); break;
@@ -1027,23 +1024,19 @@ int actualizarVenta(Venta vectorVentas[], int *contVentas, int contClientes, Cli
                 }
                 printf("\n--- Producto Actual ---\n");
                 printf("ID: %d - %s (Cantidad: %d) [ACTUAL]\n\n", v->idProducto, nombreActual, v->cantidadVendida);
-
-                // Mostrar productos disponibles con sus IDs
-                printf("--- Productos Disponibles para Cambiar ---\n");
-                for(int k = 0; k < (*contProductos); k++){
-                    char nombre[20];
-                    switch(vectorProductos[k].idProducto){
-                        case 1101: strcpy(nombre,"Router"); break;
-                        case 1201: strcpy(nombre,"Antena"); break;
-                        case 1301: strcpy(nombre,"Estabilizador"); break;
-                        case 2101: strcpy(nombre,"Cable UTP"); break;
-                        case 2201: strcpy(nombre,"Conector RJ45"); break;
-                        case 2301: strcpy(nombre,"Grapas"); break;
-                        case 2401: strcpy(nombre,"Amarras"); break;
-                        default: strcpy(nombre,"Otro"); break;
-                    }
-                    printf("%d. %s (ID: %d) - Cantidad Disponible: %d\n", k+1, nombre, vectorProductos[k].idProducto, vectorProductos[k].cantidadProducto);
-                }
+                int pausa;
+                
+                printf("\n--- Productos Disponibles ---\n\n");
+                printf(" ID     Nombre                  Cantidad\n");
+                printf("__________________________________________\n");
+                printf("1101    Router                   %3d\n", stockTotalProducto(*contProductos, vectorProductos, 1101));
+                printf("1201    Antena                   %3d\n", stockTotalProducto(*contProductos, vectorProductos, 1201));
+                printf("1301    Estabilizador            %3d\n", stockTotalProducto(*contProductos, vectorProductos, 1301));
+                printf("2101    Cable UTP                %3d\n", stockTotalProducto(*contProductos, vectorProductos, 2101));
+                printf("2201    Conector RJ45            %3d\n", stockTotalProducto(*contProductos, vectorProductos, 2201));
+                printf("2301    Grapas                   %3d\n", stockTotalProducto(*contProductos, vectorProductos, 2301));
+                printf("2401    Amarras                  %3d\n", stockTotalProducto(*contProductos, vectorProductos, 2401));
+                printf("__________________________________________\n");
                 
                 int nuevoIdProducto;
                 int nuevaCantidad;
@@ -1061,11 +1054,11 @@ int actualizarVenta(Venta vectorVentas[], int *contVentas, int contClientes, Cli
                 int viejoId = v->idProducto;
                 int viejaCantidad = v->cantidadVendida;
 
-                int disponibleNuevo = totalStockProducto(*contProductos, vectorProductos, nuevoIdProducto);
+                int disponibleNuevo = stockTotalProducto(*contProductos, vectorProductos, nuevoIdProducto);
                 int efectivoDisponible = disponibleNuevo + (nuevoIdProducto == viejoId ? viejaCantidad : 0);
 
                 if(nuevaCantidad > efectivoDisponible){
-                    printf("\nStock insuficiente. Disponible (considerando devolución): %d\n", efectivoDisponible);
+                    printf("\nStock insuficiente. Disponible (considerando devolucion): %d\n", efectivoDisponible);
                     int pausa; printf("\nDigite 0 para continuar..."); scanf("%d", &pausa);
                     break;
                 }
@@ -1073,19 +1066,19 @@ int actualizarVenta(Venta vectorVentas[], int *contVentas, int contClientes, Cli
                 if(nuevoIdProducto == viejoId){
                     if(nuevaCantidad > viejaCantidad){
                         int aDescontar = nuevaCantidad - viejaCantidad;
-                        if(!deductProductStock(contProductos, vectorProductos, nuevoIdProducto, aDescontar)){
+                        if(!descontarStock(contProductos, vectorProductos, nuevoIdProducto, aDescontar)){
                             printf("\nError al descontar stock.\n");
                             int pausa; printf("\nDigite 0 para continuar..."); scanf("%d", &pausa);
                             break;
                         }
                     } else if(nuevaCantidad < viejaCantidad){
                         int aRestock = viejaCantidad - nuevaCantidad;
-                        restockProduct(contProductos, vectorProductos, nuevoIdProducto, aRestock);
+                        restockProducto(contProductos, vectorProductos, nuevoIdProducto, aRestock);
                     }
                 } else {
-                    restockProduct(contProductos, vectorProductos, viejoId, viejaCantidad);
-                    if(!deductProductStock(contProductos, vectorProductos, nuevoIdProducto, nuevaCantidad)){
-                        if(!deductProductStock(contProductos, vectorProductos, viejoId, viejaCantidad)){
+                    restockProducto(contProductos, vectorProductos, viejoId, viejaCantidad);
+                    if(!descontarStock(contProductos, vectorProductos, nuevoIdProducto, nuevaCantidad)){
+                        if(!descontarStock(contProductos, vectorProductos, viejoId, viejaCantidad)){
                             printf("\nError al restaurar stock original. Revisar inventario.\n");
                         }
                         printf("\nStock insuficiente en el producto nuevo.\n");
@@ -1094,7 +1087,6 @@ int actualizarVenta(Venta vectorVentas[], int *contVentas, int contClientes, Cli
                     }
                 }
 
-                // actualizar valor total (obtener precio unitario)
                 float precioUnitario = 0;
                 for(int j = 0; j < (*contProductos); j++){
                     if(vectorProductos[j].idProducto == nuevoIdProducto){
@@ -1120,7 +1112,8 @@ int actualizarVenta(Venta vectorVentas[], int *contVentas, int contClientes, Cli
                 v->valorTotal = nuevaCantidad * precioUnitario;
 
                 printf("\nVenta actualizada correctamente.\n");
-                int pausa; printf("\nDigite 0 para continuar..."); scanf("%d", &pausa);
+                printf("\nDigite 0 para continuar...");
+                scanf("%d", &pausa);
                 break;
             }
             case 2:{
@@ -1583,9 +1576,9 @@ int submenuActualizarProductos(int *contProductos, Producto vectorProductos[]){
 
 int submenuEliminarProductos(int *contProductos, Producto vectorProductos[]){
     LIMPIARPANTALLA;
+    int pausa;
     if((*contProductos)==0){
         printf("\nNingun producto ha sido registrado.\n\n");
-        int pausa;
         printf("\nDigite 0 para continuar...");
         scanf("%d", &pausa);
         LIMPIARPANTALLA;
@@ -1608,7 +1601,13 @@ int submenuEliminarProductos(int *contProductos, Producto vectorProductos[]){
     printf("\n\n Ingrese una opcion. ");
     scanf("%d", &prod);
     LIMPIARPANTALLA
-
+    if(prod!=1101 && prod!=1201 && prod!=1301 && prod!=2101 && prod!=2201 && prod !=2301 && prod!=2401){
+        printf("\nProducto no encontrado.\n");
+        printf("\nDigite 0 para continuar...");
+        scanf("%d", &pausa);  
+        LIMPIARPANTALLA;
+        return 0;
+    }
     printf("\n\nEnumerador  ID      Producto        Fecha\n");
     printf("_____________________________________________\n");
     for(int i = 0; i < (*contProductos); i++){
@@ -1656,14 +1655,35 @@ int submenuEliminarProductos(int *contProductos, Producto vectorProductos[]){
     if(id<=(*contProductos)){
         productoEncontrado = 1;
         posicion = id-1;
-        printf("Producto encontrado.\n");
-        int pausa;
+            printf("\n--------- Eliminacion de producto ---------\n");
+            printf("\n0. Cancelar. ");
+            printf("\n1. Confirmar. ");
+            printf("\n\n----------------------------------------");
+            printf("\nIngrese la opcion: ");
+            scanf("%d", &pausa);
+            LIMPIARPANTALLA;
+            switch(pausa){
+                case 0:
+                    printf("La eliminacion fue cancelada.\n");
+                    printf("\n\nDigite 0 para continuar...");
+                    scanf("%d", &pausa);
+                    LIMPIARPANTALLA;
+                    break;
+                case 1:
+                    eliminarProductos(contProductos, vectorProductos, posicion);
+                    printf("\nProducto eliminado exitosamente. \n\n");
+                    printf("\n\nDigite 0 para continuar...");
+                    scanf("%d", &pausa);
+                    LIMPIARPANTALLA;
+                    break;
+            }
+        /*int pausa;
         printf("\nDigite 0 para confirmar la eliminacion del producto...");
         scanf("%d", &pausa);
         LIMPIARPANTALLA;
         eliminarProductos(contProductos, vectorProductos, posicion);
         printf("\nProducto eliminado correctamente. \n\n");
-        LIMPIARPANTALLA;
+        LIMPIARPANTALLA;*/
     }
     LIMPIARPANTALLA;
     if(productoEncontrado == -1){
@@ -1675,10 +1695,9 @@ int submenuEliminarProductos(int *contProductos, Producto vectorProductos[]){
     }
 }
 
-void submenuCrearVenta(Venta vectorVentas[], int *contVentas, int contClientes, Cliente vectorClientes[], int *contProductos, Producto vectorProductos[]){
+void submenuCrearVenta(int *generadorID_venta, Venta vectorVentas[], int *contVentas, int contClientes, Cliente vectorClientes[], int *contProductos, Producto vectorProductos[]){
     LIMPIARPANTALLA;
-    static int generadorID_Venta_local = 0;
-    Venta miVenta = crearVenta(&generadorID_Venta_local, contVentas, contClientes, vectorClientes, contProductos, vectorProductos);
+    Venta miVenta = crearVenta(generadorID_venta, contVentas, contClientes, vectorClientes, contProductos, vectorProductos);
     if (*contVentas > 0 && miVenta.idVenta != 0) {
         vectorVentas[(*contVentas) - 1] = miVenta;     
     }
@@ -1767,7 +1786,7 @@ void submenuEliminarVenta(int *contVentas, Venta vectorVentas[]){
     }
 }
 
-void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProductos[], Venta vectorVentas[], int *contClientes,int *contProductos, int *contVentas, int *contVectorproductos){
+void gestionarMenus(int *generadorID_venta, int opcion, Cliente vectorClientes[], Producto vectorProductos[], Venta vectorVentas[], int *contClientes,int *contProductos, int *contVentas, int *contVectorproductos){
     Cliente miCliente;
     switch(opcion){
             case menuClientes: {
@@ -1803,9 +1822,6 @@ void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProduct
                             break;
                         case opcionMostrarProductos:
                             submenuMostrarProductos(contProductos, vectorProductos);
-							int pausa;
-                            printf("\nDigite 0 para continuar...");
-                            scanf("%d", &pausa);
                             break;
                         case opcionActualizarProductos:
                             submenuActualizarProductos(contProductos, vectorProductos);
@@ -1815,8 +1831,10 @@ void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProduct
                             break;
                         case opcionInformeInventario:
                             informeInventario(*contProductos, vectorProductos);
+                            int pausa;
 							printf("\nDigite 0 para continuar...");
                             scanf("%d", &pausa);
+                            LIMPIARPANTALLA;
                             break;
                     }
                 }
@@ -1831,7 +1849,7 @@ void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProduct
                     LIMPIARPANTALLA;
                     switch(opcionGestionarVentas){
                         case opcionCrearVentas:
-                            submenuCrearVenta(vectorVentas, contVentas, *contClientes, vectorClientes, contProductos, vectorProductos);
+                            submenuCrearVenta(generadorID_venta, vectorVentas, contVentas, *contClientes, vectorClientes, contProductos, vectorProductos);
                             break;
                         case opcionMostrarVentas:
                             submenuMostrarVenta(vectorVentas, contVentas, vectorProductos);
@@ -1851,6 +1869,7 @@ void gestionarMenus(int opcion, Cliente vectorClientes[], Producto vectorProduct
 }
 
 void main(){
+    int generadorID_venta = 0;
     int tamanoClientes = 100;
     int tamanoProductos = 100;
     int tamanoVentas = 100;
@@ -1862,7 +1881,7 @@ void main(){
     Producto vectorProductos[tamanoProductos];
     Venta vectorVentas[tamanoVentas];
     cargarClientes(vectorClientes, &contClientes);
-    cargarVentas(vectorVentas, &contVentas);
+    cargarVentas(vectorVentas, &contVentas, &generadorID_venta);
     cargarProductos(vectorProductos, &contProductos);
     int opcion = 1;
     while(opcion!=0){
@@ -1870,7 +1889,6 @@ void main(){
         menuPrincipal();
         scanf("%d", &opcion);
         LIMPIARPANTALLA;
-        gestionarMenus(opcion, vectorClientes, vectorProductos, vectorVentas, &contClientes,&contProductos, &contVentas, &contVectorproductos);
+        gestionarMenus(&generadorID_venta, opcion, vectorClientes, vectorProductos, vectorVentas, &contClientes,&contProductos, &contVentas, &contVectorproductos);
     }
 }
-
