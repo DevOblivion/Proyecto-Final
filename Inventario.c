@@ -57,7 +57,6 @@ typedef struct {
     int valorCompra;
     float valorVenta;
     int cantidadProducto;
-    int CantidadVendida;
     Fecha fechaCompra;
 } Producto;
 
@@ -757,7 +756,6 @@ void restockProducto(int *contProductos, Producto vectorProductos[], int idProdu
     p.tipoProducto = 0;
     p.nombreProducto = 0;
     p.cantidadProducto = cantidad;
-    p.CantidadVendida = 0;
     p.fechaCompra.dia = p.fechaCompra.mes = p.fechaCompra.ano = 0;
     switch(idProducto){
         case 1101: p.valorCompra = 38000; break;
@@ -1251,9 +1249,9 @@ void informeInventario( int contProductos,Producto vectorProductos[]){
     printf("|                    Grafico de Activos (En en pesos 100K)                     |\n");
     printf("+------------------------------------------------------------------------------+\n");
 
-    // Bucle exterior: Itera desde la altura máxima hacia abajo (de arriba a abajo)
+    // Bucle exterior: Itera desde la altura maxima hacia abajo (de arriba a abajo)
     for (int nivel_actual = max; nivel_actual > 0; nivel_actual--) {
-        // Opcional: Imprime el número del nivel/eje Y
+       
         printf("|          %2d | ", nivel_actual);
 
         // Bucle interior: Itera sobre cada barra en la fila actual
@@ -1262,11 +1260,11 @@ void informeInventario( int contProductos,Producto vectorProductos[]){
             if (datos[i] >= nivel_actual) {
                 printf(" |XX| ");
             } else {
-                // Si no, imprime espacios vacíos para esa posición
+                // Si no, imprime espacios vacios para esa posicion
                 printf("      ");
             }
         }
-        printf("                     |\n"); // Salto de línea para pasar al siguiente nivel inferior
+        printf("                     |\n"); // Salto de linea para pasar al siguiente nivel inferior
     }
 
     // Opcional: Imprime el eje X y etiquetas en la parte inferior
@@ -1276,7 +1274,7 @@ void informeInventario( int contProductos,Producto vectorProductos[]){
     }
     printf("                      |\n|             |");
     for (int i = 0; i < num_barras; i++) {
-        // Imprime etiquetas simples (A, B, C...) o índices (1, 2, 3...)
+       
         printf(" %3c  ", 'A' + i);
     }
     printf("                      |\n");
@@ -1289,9 +1287,7 @@ void informeInventario( int contProductos,Producto vectorProductos[]){
     
 }
 
-void actualizarPrecios(){
 
-}
 //FINAL FUNCION ESPECIAL
 
 //FUNCION RECURSIVA - INGRESO TOTAL
